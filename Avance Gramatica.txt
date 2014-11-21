@@ -1,0 +1,60 @@
+Alfabeto: { prim trans num regla . : | & [ ] < > ^ = $ + _ * / ( ) }
+
+Tokens: 
+	prim: { box ball _ }
+	trans: { rx ry rz sx sy sz s tx ty tz cr cg cb d }
+	num: float
+	regla: string
+	
+Esto no debería ser un token 
+	coment: "string" este token se ignora en el lexer
+
+Simbolo distinguido: Programa
+
+Producciones:
+
+Programa -> Reglas Main Masreglas
+
+Reglas -> Reglas Unaregla
+Reglas -> LAMBDA
+
+Masreglas -> Masreglas Main
+Masreglas -> Masreglas Unaregla
+Masreglas -> LAMBDA
+
+Main -> Nombremain = Elemento
+
+Nombremain -> $
+Nombremain -> $.
+
+Unaregla -> Nombreregla=Elemento
+
+Nombreregla -> regla
+Nombreregla -> regla.
+
+Elemento -> Elemento | Elementoand
+Elemento -> Elementoand
+
+Elementoand -> Elementoand & Elementobase
+Elementoand -> Elementobase
+
+Elementobase -> prim
+Elementobase -> Elementobase : trans Numero
+Elementobase -> [ Elemento ]
+Elementobase -> Elementobase ^ Numero
+Elementobase -> < Elemento >
+Elementobase -> Nombreregla
+Elementobase -> Nombremain
+
+Numero -> Numero + Factor
+Numero -> Numero - Factor
+Numero -> Factor
+
+Factor -> Factor * Termino
+Factor -> Factor / Termino
+Factor -> Termino
+
+Termino -> ( Numero )
+Termino -> num
+Termino -> +num
+Termino -> -num

@@ -1,0 +1,60 @@
+
+Alfabeto = { prim trans num regla coment " = . : | & [ ] < > ^ + - * / ( ) }
+
+donde	prim	= { box ball - }
+	trans	= { rx ry rz sx sy sz s tx ty tz cr cg cb d }
+	num	= float ?
+	regla	= string ?
+	coment	= string ?
+
+
+Producciones
+------------
+
+Un programa es una lista de reglas:
+
+P -> S		(caso base: al menos una regla)
+P -> P S	(caso inductivo: agrega una regla)
+
+
+Una regla puede ser:
+
+S -> R		(regla sin comentario)
+S -> R "coment"	(regla con comentario)
+R -> regla = E
+R -> regla.= E	(regla final, si hay varias con el mismo nombre)
+
+
+Un elemento puede ser combinación de primitivas, transformaciones, operaciones y reglas ** :
+
+E  -> E | E1
+E  -> E1
+E1 -> E1 & E2
+E1 -> E1 ^ N
+E1 -> < E1 >
+E1 -> E2
+E2 -> E2 : trans N
+E2 -> [ E ]
+E2 -> prim
+E2 -> regla
+
+
+Una expresión numérica:
+
+N -> N + M 
+N -> N - M
+N -> M
+M -> M * F
+M -> M / F 
+M -> F
+F -> num
+F -> +num
+F -> -num
+F -> (N)
+
+
+** El enunciado requiere 1) y 2)
+1) Precedencias:
+  trans	> operaciones
+   ^ &	> |
+2) & | y trans asocian a izquierda
