@@ -3,6 +3,7 @@ import numpy as num
 from visual import *
 import random as aleatorio
 from transformacion import *
+import copy
 
 class Elemento(object):
 	def transformar(self,trans):
@@ -17,11 +18,11 @@ class Elemento(object):
 class Primitiva(Elemento):
 	def __init__(self):
 		self.estado = Transformacion()
-		self.orig = ''
-		self.dirx = ''
-		self.diry = ''
-		self.dirz = ''
-		self.size = ''
+		self.orig = None
+		self.dirx = None
+		self.diry = None
+		self.dirz = None
+		self.size = None
 
 	def transformar(self,trans):
 		self.estado.transformar(trans)
@@ -29,11 +30,12 @@ class Primitiva(Elemento):
 
 	def mostrar(self):
 		trans = self.estado
-		self.orig = num.dot([0,0,0,1], trans.space)[:3]
-		self.dirx = num.dot([1,0,0,0], trans.space)[:3]
-		self.diry = num.dot([0,1,0,0], trans.space)[:3]
-		self.dirz = num.dot([0,0,1,0], trans.space)[:3] 
-		self.size = [num.linalg.norm(self.dirx),num.linalg.norm(self.diry),num.linalg.norm(self.dirz)]
+		if self.orig is None:
+			self.orig = num.dot([0,0,0,1], trans.space)[:3]
+			self.dirx = num.dot([1,0,0,0], trans.space)[:3]
+			self.diry = num.dot([0,1,0,0], trans.space)[:3]
+			self.dirz = num.dot([0,0,1,0], trans.space)[:3] 
+			self.size = [num.linalg.norm(self.dirx),num.linalg.norm(self.diry),num.linalg.norm(self.dirz)]
 
 	def debug(self):
 		self.estado.debug()
@@ -88,6 +90,23 @@ class ElementoOR(Compuesta):
 
 class ElementoPOT(Compuesta):
 	pass
+#------------------------------------------------------------------------
+class ElementoREGLA(Elemento):
+	def __init__(self,nombre,reglas,finales):
+		self.nombre = nombre
+		self.reglas = reglas
+		self.finales = finales
+		self.transformaciones = []
+
+	def transformar(self,trans):
+		self.transformaciones.append(trans)
+
+	def mostrar(self):
+		original = self.reglas[self.nombre]
+		copia = copy.deepcopy(original)
+		for t in self.transformaciones:
+			copia.transformar(t)
+		copia.mostrar()
 
 # ba = Ball()
 # bo = Box()

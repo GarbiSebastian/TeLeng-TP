@@ -10,12 +10,19 @@ from visual import *
 import numpy as np
 from elemento import *
 
-reglas = {}
-finales ={}
+reglas  = {}
+finales = {}
+verificar = []
+
+def verificarReglas():
+	for regla in verificar:
+		if regla not in reglas:
+			p_error()
 
 def p_programa(t):
 	'programa : reglas main masreglas'
 	print 'programa : reglas main masreglas'
+	verificarReglas()
 	reglas['$'].mostrar()
 	
 def p_reglas_empty(t):
@@ -102,13 +109,13 @@ def p_elementobase_maymen(t):
 	t[0]= ElementoOR().append(Nada()).append(t[2])
 	print "elementobase : '<' elemento '>'"
 
-def p_elementobase_nombreregla(t):
-	'elementobase : REGLA'
-	print 'elementobase : REGLA'
-
-def p_elementobase_nombremain(t):
-	"elementobase : '$' "
-	print "elementobase : '$' "
+def p_elementobase_regla(t):
+	'''elementobase : REGLA
+	elementobase : '$' '''
+	verificar.append(t[1])
+	t[0] = ElementoREGLA(nombre=t[1],reglas=reglas,finales=finales)
+	print '''elementobase : REGLA
+	elementobase : '$' '''
 
 def p_ball(t):
 	'prim : BALL'
