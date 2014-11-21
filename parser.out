@@ -3,16 +3,16 @@ Created by PLY version 3.4 (http://www.dabeaz.com/ply)
 Grammar
 
 Rule 0     S' -> programa
-Rule 1     programa -> reglas main reglas
+Rule 1     programa -> reglas main masreglas
 Rule 2     reglas -> <empty>
-Rule 3     reglas -> reglas main
+Rule 3     masreglas -> <empty>
 Rule 4     reglas -> reglas unaregla
-Rule 5     main -> nombremain = elemento
-Rule 6     nombremain -> $
-Rule 7     nombremain -> $ .
-Rule 8     unaregla -> nombreregla = elemento
-Rule 9     nombreregla -> REGLA
-Rule 10    nombreregla -> REGLA .
+Rule 5     masreglas -> masreglas unaregla
+Rule 6     masreglas -> masreglas main
+Rule 7     unaregla -> REGLA = elemento
+Rule 8     main -> $ = elemento
+Rule 9     unaregla -> REGLA . = elemento
+Rule 10    main -> $ . = elemento
 Rule 11    elemento -> elemento | elementoand
 Rule 12    elemento -> elementoand
 Rule 13    elementoand -> elementoand & elementobase
@@ -22,8 +22,8 @@ Rule 16    elementobase -> elementobase : trans
 Rule 17    elementobase -> [ elemento ]
 Rule 18    elementobase -> elementobase ^ numero
 Rule 19    elementobase -> < elemento >
-Rule 20    elementobase -> nombreregla
-Rule 21    elementobase -> nombremain
+Rule 20    elementobase -> REGLA
+Rule 21    elementobase -> $
 Rule 22    prim -> BALL
 Rule 23    prim -> BOX
 Rule 24    prim -> NADA
@@ -49,24 +49,25 @@ Rule 43    numero -> factor
 Rule 44    factor -> termino
 Rule 45    termino -> NUM
 Rule 46    termino -> + NUM
-Rule 47    termino -> ( numero )
-Rule 48    termino -> + ( numero )
-Rule 49    termino -> - ( numero )
+Rule 47    termino -> - NUM
+Rule 48    termino -> ( numero )
+Rule 49    termino -> + ( numero )
+Rule 50    termino -> - ( numero )
 
 Terminals, with rules where they appear
 
-$                    : 6 7
+$                    : 8 10 21
 &                    : 13
-(                    : 47 48 49
-)                    : 47 48 49
+(                    : 48 49 50
+)                    : 48 49 50
 *                    : 41
-+                    : 39 46 48
--                    : 40 49
-.                    : 7 10
++                    : 39 46 49
+-                    : 40 47 50
+.                    : 9 10
 /                    : 42
 :                    : 16
 <                    : 19
-=                    : 5 8
+=                    : 7 8 9 10
 >                    : 19
 BALL                 : 22
 BOX                  : 23
@@ -75,8 +76,8 @@ CG                   : 36
 CR                   : 35
 D                    : 38
 NADA                 : 24
-NUM                  : 45 46
-REGLA                : 9 10
+NUM                  : 45 46 47
+REGLA                : 7 9 20
 RX                   : 25
 RY                   : 26
 RZ                   : 27
@@ -95,29 +96,27 @@ error                :
 
 Nonterminals, with rules where they appear
 
-elemento             : 5 8 11 17 19
+elemento             : 7 8 9 10 11 17 19
 elementoand          : 11 12 13
 elementobase         : 13 14 16 18
 factor               : 39 40 41 42 43
-main                 : 1 3
-nombremain           : 5 21
-nombreregla          : 8 20
-numero               : 18 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 47 48 49
+main                 : 1 6
+masreglas            : 1 5 6
+numero               : 18 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 48 49 50
 prim                 : 15
 programa             : 0
-reglas               : 1 1 3 4
+reglas               : 1 4
 termino              : 41 42 44
 trans                : 16
-unaregla             : 4
+unaregla             : 4 5
 
 Parsing method: LALR
 
 state 0
 
     (0) S' -> . programa
-    (1) programa -> . reglas main reglas
+    (1) programa -> . reglas main masreglas
     (2) reglas -> .
-    (3) reglas -> . reglas main
     (4) reglas -> . reglas unaregla
 
     $               reduce using rule 2 (reglas -> .)
@@ -128,23 +127,18 @@ state 0
 
 state 1
 
-    (1) programa -> reglas . main reglas
-    (3) reglas -> reglas . main
+    (1) programa -> reglas . main masreglas
     (4) reglas -> reglas . unaregla
-    (5) main -> . nombremain = elemento
-    (8) unaregla -> . nombreregla = elemento
-    (6) nombremain -> . $
-    (7) nombremain -> . $ .
-    (9) nombreregla -> . REGLA
-    (10) nombreregla -> . REGLA .
+    (8) main -> . $ = elemento
+    (10) main -> . $ . = elemento
+    (7) unaregla -> . REGLA = elemento
+    (9) unaregla -> . REGLA . = elemento
 
     $               shift and go to state 4
     REGLA           shift and go to state 5
 
     unaregla                       shift and go to state 3
-    nombremain                     shift and go to state 6
-    nombreregla                    shift and go to state 7
-    main                           shift and go to state 8
+    main                           shift and go to state 6
 
 state 2
 
@@ -158,150 +152,135 @@ state 3
 
     $               reduce using rule 4 (reglas -> reglas unaregla .)
     REGLA           reduce using rule 4 (reglas -> reglas unaregla .)
-    $end            reduce using rule 4 (reglas -> reglas unaregla .)
 
 
 state 4
 
-    (6) nombremain -> $ .
-    (7) nombremain -> $ . .
+    (8) main -> $ . = elemento
+    (10) main -> $ . . = elemento
 
-    :               reduce using rule 6 (nombremain -> $ .)
-    ^               reduce using rule 6 (nombremain -> $ .)
-    &               reduce using rule 6 (nombremain -> $ .)
-    |               reduce using rule 6 (nombremain -> $ .)
-    $               reduce using rule 6 (nombremain -> $ .)
-    REGLA           reduce using rule 6 (nombremain -> $ .)
-    $end            reduce using rule 6 (nombremain -> $ .)
-    >               reduce using rule 6 (nombremain -> $ .)
-    ]               reduce using rule 6 (nombremain -> $ .)
-    =               reduce using rule 6 (nombremain -> $ .)
-    .               shift and go to state 9
+    =               shift and go to state 8
+    .               shift and go to state 7
 
 
 state 5
 
-    (9) nombreregla -> REGLA .
-    (10) nombreregla -> REGLA . .
+    (7) unaregla -> REGLA . = elemento
+    (9) unaregla -> REGLA . . = elemento
 
-    :               reduce using rule 9 (nombreregla -> REGLA .)
-    ^               reduce using rule 9 (nombreregla -> REGLA .)
-    &               reduce using rule 9 (nombreregla -> REGLA .)
-    ]               reduce using rule 9 (nombreregla -> REGLA .)
-    |               reduce using rule 9 (nombreregla -> REGLA .)
-    >               reduce using rule 9 (nombreregla -> REGLA .)
-    $               reduce using rule 9 (nombreregla -> REGLA .)
-    REGLA           reduce using rule 9 (nombreregla -> REGLA .)
-    $end            reduce using rule 9 (nombreregla -> REGLA .)
-    =               reduce using rule 9 (nombreregla -> REGLA .)
-    .               shift and go to state 10
+    =               shift and go to state 10
+    .               shift and go to state 9
 
 
 state 6
 
-    (5) main -> nombremain . = elemento
+    (1) programa -> reglas main . masreglas
+    (3) masreglas -> .
+    (5) masreglas -> . masreglas unaregla
+    (6) masreglas -> . masreglas main
 
-    =               shift and go to state 11
+    REGLA           reduce using rule 3 (masreglas -> .)
+    $               reduce using rule 3 (masreglas -> .)
+    $end            reduce using rule 3 (masreglas -> .)
 
+    masreglas                      shift and go to state 11
 
 state 7
 
-    (8) unaregla -> nombreregla . = elemento
+    (10) main -> $ . . = elemento
 
     =               shift and go to state 12
 
 
 state 8
 
-    (1) programa -> reglas main . reglas
-    (3) reglas -> reglas main .
-    (2) reglas -> .
-    (3) reglas -> . reglas main
-    (4) reglas -> . reglas unaregla
+    (8) main -> $ = . elemento
+    (11) elemento -> . elemento | elementoand
+    (12) elemento -> . elementoand
+    (13) elementoand -> . elementoand & elementobase
+    (14) elementoand -> . elementobase
+    (15) elementobase -> . prim
+    (16) elementobase -> . elementobase : trans
+    (17) elementobase -> . [ elemento ]
+    (18) elementobase -> . elementobase ^ numero
+    (19) elementobase -> . < elemento >
+    (20) elementobase -> . REGLA
+    (21) elementobase -> . $
+    (22) prim -> . BALL
+    (23) prim -> . BOX
+    (24) prim -> . NADA
 
-  ! reduce/reduce conflict for $ resolved using rule 2 (reglas -> .)
-  ! reduce/reduce conflict for REGLA resolved using rule 2 (reglas -> .)
-    $               reduce using rule 2 (reglas -> .)
-    REGLA           reduce using rule 2 (reglas -> .)
-    $end            reduce using rule 2 (reglas -> .)
+    [               shift and go to state 22
+    <               shift and go to state 19
+    REGLA           shift and go to state 16
+    $               shift and go to state 15
+    BALL            shift and go to state 20
+    BOX             shift and go to state 13
+    NADA            shift and go to state 18
 
-  ! $               [ reduce using rule 3 (reglas -> reglas main .) ]
-  ! REGLA           [ reduce using rule 3 (reglas -> reglas main .) ]
-
-    reglas                         shift and go to state 13
+    elementobase                   shift and go to state 14
+    elementoand                    shift and go to state 17
+    prim                           shift and go to state 21
+    elemento                       shift and go to state 23
 
 state 9
 
-    (7) nombremain -> $ . .
+    (9) unaregla -> REGLA . . = elemento
 
-    :               reduce using rule 7 (nombremain -> $ . .)
-    ^               reduce using rule 7 (nombremain -> $ . .)
-    &               reduce using rule 7 (nombremain -> $ . .)
-    |               reduce using rule 7 (nombremain -> $ . .)
-    $               reduce using rule 7 (nombremain -> $ . .)
-    REGLA           reduce using rule 7 (nombremain -> $ . .)
-    $end            reduce using rule 7 (nombremain -> $ . .)
-    >               reduce using rule 7 (nombremain -> $ . .)
-    ]               reduce using rule 7 (nombremain -> $ . .)
-    =               reduce using rule 7 (nombremain -> $ . .)
+    =               shift and go to state 24
 
 
 state 10
 
-    (10) nombreregla -> REGLA . .
+    (7) unaregla -> REGLA = . elemento
+    (11) elemento -> . elemento | elementoand
+    (12) elemento -> . elementoand
+    (13) elementoand -> . elementoand & elementobase
+    (14) elementoand -> . elementobase
+    (15) elementobase -> . prim
+    (16) elementobase -> . elementobase : trans
+    (17) elementobase -> . [ elemento ]
+    (18) elementobase -> . elementobase ^ numero
+    (19) elementobase -> . < elemento >
+    (20) elementobase -> . REGLA
+    (21) elementobase -> . $
+    (22) prim -> . BALL
+    (23) prim -> . BOX
+    (24) prim -> . NADA
 
-    :               reduce using rule 10 (nombreregla -> REGLA . .)
-    ^               reduce using rule 10 (nombreregla -> REGLA . .)
-    &               reduce using rule 10 (nombreregla -> REGLA . .)
-    ]               reduce using rule 10 (nombreregla -> REGLA . .)
-    |               reduce using rule 10 (nombreregla -> REGLA . .)
-    >               reduce using rule 10 (nombreregla -> REGLA . .)
-    $               reduce using rule 10 (nombreregla -> REGLA . .)
-    REGLA           reduce using rule 10 (nombreregla -> REGLA . .)
-    $end            reduce using rule 10 (nombreregla -> REGLA . .)
-    =               reduce using rule 10 (nombreregla -> REGLA . .)
+    [               shift and go to state 22
+    <               shift and go to state 19
+    REGLA           shift and go to state 16
+    $               shift and go to state 15
+    BALL            shift and go to state 20
+    BOX             shift and go to state 13
+    NADA            shift and go to state 18
 
+    elementobase                   shift and go to state 14
+    elementoand                    shift and go to state 17
+    prim                           shift and go to state 21
+    elemento                       shift and go to state 25
 
 state 11
 
-    (5) main -> nombremain = . elemento
-    (11) elemento -> . elemento | elementoand
-    (12) elemento -> . elementoand
-    (13) elementoand -> . elementoand & elementobase
-    (14) elementoand -> . elementobase
-    (15) elementobase -> . prim
-    (16) elementobase -> . elementobase : trans
-    (17) elementobase -> . [ elemento ]
-    (18) elementobase -> . elementobase ^ numero
-    (19) elementobase -> . < elemento >
-    (20) elementobase -> . nombreregla
-    (21) elementobase -> . nombremain
-    (22) prim -> . BALL
-    (23) prim -> . BOX
-    (24) prim -> . NADA
-    (9) nombreregla -> . REGLA
-    (10) nombreregla -> . REGLA .
-    (6) nombremain -> . $
-    (7) nombremain -> . $ .
+    (1) programa -> reglas main masreglas .
+    (5) masreglas -> masreglas . unaregla
+    (6) masreglas -> masreglas . main
+    (7) unaregla -> . REGLA = elemento
+    (9) unaregla -> . REGLA . = elemento
+    (8) main -> . $ = elemento
+    (10) main -> . $ . = elemento
 
-    [               shift and go to state 21
-    <               shift and go to state 18
-    BALL            shift and go to state 19
-    BOX             shift and go to state 14
-    NADA            shift and go to state 16
+    $end            reduce using rule 1 (programa -> reglas main masreglas .)
     REGLA           shift and go to state 5
     $               shift and go to state 4
 
-    elementobase                   shift and go to state 15
-    elementoand                    shift and go to state 23
-    nombremain                     shift and go to state 24
-    nombreregla                    shift and go to state 20
-    prim                           shift and go to state 17
-    elemento                       shift and go to state 22
+    unaregla                       shift and go to state 26
+    main                           shift and go to state 27
 
 state 12
 
-    (8) unaregla -> nombreregla = . elemento
+    (10) main -> $ . = . elemento
     (11) elemento -> . elemento | elementoand
     (12) elemento -> . elementoand
     (13) elementoand -> . elementoand & elementobase
@@ -311,53 +290,26 @@ state 12
     (17) elementobase -> . [ elemento ]
     (18) elementobase -> . elementobase ^ numero
     (19) elementobase -> . < elemento >
-    (20) elementobase -> . nombreregla
-    (21) elementobase -> . nombremain
+    (20) elementobase -> . REGLA
+    (21) elementobase -> . $
     (22) prim -> . BALL
     (23) prim -> . BOX
     (24) prim -> . NADA
-    (9) nombreregla -> . REGLA
-    (10) nombreregla -> . REGLA .
-    (6) nombremain -> . $
-    (7) nombremain -> . $ .
 
-    [               shift and go to state 21
-    <               shift and go to state 18
-    BALL            shift and go to state 19
-    BOX             shift and go to state 14
-    NADA            shift and go to state 16
-    REGLA           shift and go to state 5
-    $               shift and go to state 4
+    [               shift and go to state 22
+    <               shift and go to state 19
+    REGLA           shift and go to state 16
+    $               shift and go to state 15
+    BALL            shift and go to state 20
+    BOX             shift and go to state 13
+    NADA            shift and go to state 18
 
-    elementobase                   shift and go to state 15
-    elementoand                    shift and go to state 23
-    nombremain                     shift and go to state 24
-    nombreregla                    shift and go to state 20
-    prim                           shift and go to state 17
-    elemento                       shift and go to state 25
+    elementobase                   shift and go to state 14
+    elementoand                    shift and go to state 17
+    prim                           shift and go to state 21
+    elemento                       shift and go to state 28
 
 state 13
-
-    (1) programa -> reglas main reglas .
-    (3) reglas -> reglas . main
-    (4) reglas -> reglas . unaregla
-    (5) main -> . nombremain = elemento
-    (8) unaregla -> . nombreregla = elemento
-    (6) nombremain -> . $
-    (7) nombremain -> . $ .
-    (9) nombreregla -> . REGLA
-    (10) nombreregla -> . REGLA .
-
-    $end            reduce using rule 1 (programa -> reglas main reglas .)
-    $               shift and go to state 4
-    REGLA           shift and go to state 5
-
-    unaregla                       shift and go to state 3
-    nombremain                     shift and go to state 6
-    nombreregla                    shift and go to state 7
-    main                           shift and go to state 26
-
-state 14
 
     (23) prim -> BOX .
 
@@ -372,7 +324,7 @@ state 14
     ]               reduce using rule 23 (prim -> BOX .)
 
 
-state 15
+state 14
 
     (14) elementoand -> elementobase .
     (16) elementobase -> elementobase . : trans
@@ -383,13 +335,57 @@ state 15
     $               reduce using rule 14 (elementoand -> elementobase .)
     REGLA           reduce using rule 14 (elementoand -> elementobase .)
     $end            reduce using rule 14 (elementoand -> elementobase .)
-    >               reduce using rule 14 (elementoand -> elementobase .)
     ]               reduce using rule 14 (elementoand -> elementobase .)
-    :               shift and go to state 27
-    ^               shift and go to state 28
+    >               reduce using rule 14 (elementoand -> elementobase .)
+    :               shift and go to state 29
+    ^               shift and go to state 30
+
+
+state 15
+
+    (21) elementobase -> $ .
+
+    :               reduce using rule 21 (elementobase -> $ .)
+    ^               reduce using rule 21 (elementobase -> $ .)
+    &               reduce using rule 21 (elementobase -> $ .)
+    ]               reduce using rule 21 (elementobase -> $ .)
+    |               reduce using rule 21 (elementobase -> $ .)
+    REGLA           reduce using rule 21 (elementobase -> $ .)
+    $               reduce using rule 21 (elementobase -> $ .)
+    $end            reduce using rule 21 (elementobase -> $ .)
+    >               reduce using rule 21 (elementobase -> $ .)
 
 
 state 16
+
+    (20) elementobase -> REGLA .
+
+    :               reduce using rule 20 (elementobase -> REGLA .)
+    ^               reduce using rule 20 (elementobase -> REGLA .)
+    &               reduce using rule 20 (elementobase -> REGLA .)
+    ]               reduce using rule 20 (elementobase -> REGLA .)
+    |               reduce using rule 20 (elementobase -> REGLA .)
+    REGLA           reduce using rule 20 (elementobase -> REGLA .)
+    $               reduce using rule 20 (elementobase -> REGLA .)
+    $end            reduce using rule 20 (elementobase -> REGLA .)
+    >               reduce using rule 20 (elementobase -> REGLA .)
+
+
+state 17
+
+    (12) elemento -> elementoand .
+    (13) elementoand -> elementoand . & elementobase
+
+    >               reduce using rule 12 (elemento -> elementoand .)
+    |               reduce using rule 12 (elemento -> elementoand .)
+    REGLA           reduce using rule 12 (elemento -> elementoand .)
+    $               reduce using rule 12 (elemento -> elementoand .)
+    $end            reduce using rule 12 (elemento -> elementoand .)
+    ]               reduce using rule 12 (elemento -> elementoand .)
+    &               shift and go to state 31
+
+
+state 18
 
     (24) prim -> NADA .
 
@@ -404,22 +400,7 @@ state 16
     ]               reduce using rule 24 (prim -> NADA .)
 
 
-state 17
-
-    (15) elementobase -> prim .
-
-    :               reduce using rule 15 (elementobase -> prim .)
-    ^               reduce using rule 15 (elementobase -> prim .)
-    &               reduce using rule 15 (elementobase -> prim .)
-    |               reduce using rule 15 (elementobase -> prim .)
-    $               reduce using rule 15 (elementobase -> prim .)
-    REGLA           reduce using rule 15 (elementobase -> prim .)
-    $end            reduce using rule 15 (elementobase -> prim .)
-    >               reduce using rule 15 (elementobase -> prim .)
-    ]               reduce using rule 15 (elementobase -> prim .)
-
-
-state 18
+state 19
 
     (19) elementobase -> < . elemento >
     (11) elemento -> . elemento | elementoand
@@ -431,32 +412,26 @@ state 18
     (17) elementobase -> . [ elemento ]
     (18) elementobase -> . elementobase ^ numero
     (19) elementobase -> . < elemento >
-    (20) elementobase -> . nombreregla
-    (21) elementobase -> . nombremain
+    (20) elementobase -> . REGLA
+    (21) elementobase -> . $
     (22) prim -> . BALL
     (23) prim -> . BOX
     (24) prim -> . NADA
-    (9) nombreregla -> . REGLA
-    (10) nombreregla -> . REGLA .
-    (6) nombremain -> . $
-    (7) nombremain -> . $ .
 
-    [               shift and go to state 21
-    <               shift and go to state 18
-    BALL            shift and go to state 19
-    BOX             shift and go to state 14
-    NADA            shift and go to state 16
-    REGLA           shift and go to state 5
-    $               shift and go to state 4
+    [               shift and go to state 22
+    <               shift and go to state 19
+    REGLA           shift and go to state 16
+    $               shift and go to state 15
+    BALL            shift and go to state 20
+    BOX             shift and go to state 13
+    NADA            shift and go to state 18
 
-    elementobase                   shift and go to state 15
-    elementoand                    shift and go to state 23
-    nombremain                     shift and go to state 24
-    nombreregla                    shift and go to state 20
-    prim                           shift and go to state 17
-    elemento                       shift and go to state 29
+    elementobase                   shift and go to state 14
+    elementoand                    shift and go to state 17
+    prim                           shift and go to state 21
+    elemento                       shift and go to state 32
 
-state 19
+state 20
 
     (22) prim -> BALL .
 
@@ -471,22 +446,22 @@ state 19
     ]               reduce using rule 22 (prim -> BALL .)
 
 
-state 20
-
-    (20) elementobase -> nombreregla .
-
-    :               reduce using rule 20 (elementobase -> nombreregla .)
-    ^               reduce using rule 20 (elementobase -> nombreregla .)
-    &               reduce using rule 20 (elementobase -> nombreregla .)
-    |               reduce using rule 20 (elementobase -> nombreregla .)
-    $               reduce using rule 20 (elementobase -> nombreregla .)
-    REGLA           reduce using rule 20 (elementobase -> nombreregla .)
-    $end            reduce using rule 20 (elementobase -> nombreregla .)
-    >               reduce using rule 20 (elementobase -> nombreregla .)
-    ]               reduce using rule 20 (elementobase -> nombreregla .)
-
-
 state 21
+
+    (15) elementobase -> prim .
+
+    :               reduce using rule 15 (elementobase -> prim .)
+    ^               reduce using rule 15 (elementobase -> prim .)
+    &               reduce using rule 15 (elementobase -> prim .)
+    ]               reduce using rule 15 (elementobase -> prim .)
+    |               reduce using rule 15 (elementobase -> prim .)
+    REGLA           reduce using rule 15 (elementobase -> prim .)
+    $               reduce using rule 15 (elementobase -> prim .)
+    $end            reduce using rule 15 (elementobase -> prim .)
+    >               reduce using rule 15 (elementobase -> prim .)
+
+
+state 22
 
     (17) elementobase -> [ . elemento ]
     (11) elemento -> . elemento | elementoand
@@ -498,92 +473,108 @@ state 21
     (17) elementobase -> . [ elemento ]
     (18) elementobase -> . elementobase ^ numero
     (19) elementobase -> . < elemento >
-    (20) elementobase -> . nombreregla
-    (21) elementobase -> . nombremain
+    (20) elementobase -> . REGLA
+    (21) elementobase -> . $
     (22) prim -> . BALL
     (23) prim -> . BOX
     (24) prim -> . NADA
-    (9) nombreregla -> . REGLA
-    (10) nombreregla -> . REGLA .
-    (6) nombremain -> . $
-    (7) nombremain -> . $ .
 
-    [               shift and go to state 21
-    <               shift and go to state 18
-    BALL            shift and go to state 19
-    BOX             shift and go to state 14
-    NADA            shift and go to state 16
-    REGLA           shift and go to state 5
-    $               shift and go to state 4
+    [               shift and go to state 22
+    <               shift and go to state 19
+    REGLA           shift and go to state 16
+    $               shift and go to state 15
+    BALL            shift and go to state 20
+    BOX             shift and go to state 13
+    NADA            shift and go to state 18
 
-    elementobase                   shift and go to state 15
-    elementoand                    shift and go to state 23
-    nombremain                     shift and go to state 24
-    nombreregla                    shift and go to state 20
-    prim                           shift and go to state 17
-    elemento                       shift and go to state 30
-
-state 22
-
-    (5) main -> nombremain = elemento .
-    (11) elemento -> elemento . | elementoand
-
-    $               reduce using rule 5 (main -> nombremain = elemento .)
-    REGLA           reduce using rule 5 (main -> nombremain = elemento .)
-    $end            reduce using rule 5 (main -> nombremain = elemento .)
-    |               shift and go to state 31
-
+    elementobase                   shift and go to state 14
+    elementoand                    shift and go to state 17
+    prim                           shift and go to state 21
+    elemento                       shift and go to state 33
 
 state 23
 
-    (12) elemento -> elementoand .
-    (13) elementoand -> elementoand . & elementobase
+    (8) main -> $ = elemento .
+    (11) elemento -> elemento . | elementoand
 
-    |               reduce using rule 12 (elemento -> elementoand .)
-    $               reduce using rule 12 (elemento -> elementoand .)
-    REGLA           reduce using rule 12 (elemento -> elementoand .)
-    $end            reduce using rule 12 (elemento -> elementoand .)
-    >               reduce using rule 12 (elemento -> elementoand .)
-    ]               reduce using rule 12 (elemento -> elementoand .)
-    &               shift and go to state 32
+    REGLA           reduce using rule 8 (main -> $ = elemento .)
+    $               reduce using rule 8 (main -> $ = elemento .)
+    $end            reduce using rule 8 (main -> $ = elemento .)
+    |               shift and go to state 34
 
 
 state 24
 
-    (21) elementobase -> nombremain .
+    (9) unaregla -> REGLA . = . elemento
+    (11) elemento -> . elemento | elementoand
+    (12) elemento -> . elementoand
+    (13) elementoand -> . elementoand & elementobase
+    (14) elementoand -> . elementobase
+    (15) elementobase -> . prim
+    (16) elementobase -> . elementobase : trans
+    (17) elementobase -> . [ elemento ]
+    (18) elementobase -> . elementobase ^ numero
+    (19) elementobase -> . < elemento >
+    (20) elementobase -> . REGLA
+    (21) elementobase -> . $
+    (22) prim -> . BALL
+    (23) prim -> . BOX
+    (24) prim -> . NADA
 
-    :               reduce using rule 21 (elementobase -> nombremain .)
-    ^               reduce using rule 21 (elementobase -> nombremain .)
-    &               reduce using rule 21 (elementobase -> nombremain .)
-    |               reduce using rule 21 (elementobase -> nombremain .)
-    $               reduce using rule 21 (elementobase -> nombremain .)
-    REGLA           reduce using rule 21 (elementobase -> nombremain .)
-    $end            reduce using rule 21 (elementobase -> nombremain .)
-    >               reduce using rule 21 (elementobase -> nombremain .)
-    ]               reduce using rule 21 (elementobase -> nombremain .)
+    [               shift and go to state 22
+    <               shift and go to state 19
+    REGLA           shift and go to state 16
+    $               shift and go to state 15
+    BALL            shift and go to state 20
+    BOX             shift and go to state 13
+    NADA            shift and go to state 18
 
+    elementobase                   shift and go to state 14
+    elementoand                    shift and go to state 17
+    prim                           shift and go to state 21
+    elemento                       shift and go to state 35
 
 state 25
 
-    (8) unaregla -> nombreregla = elemento .
+    (7) unaregla -> REGLA = elemento .
     (11) elemento -> elemento . | elementoand
 
-    $               reduce using rule 8 (unaregla -> nombreregla = elemento .)
-    REGLA           reduce using rule 8 (unaregla -> nombreregla = elemento .)
-    $end            reduce using rule 8 (unaregla -> nombreregla = elemento .)
-    |               shift and go to state 31
+    REGLA           reduce using rule 7 (unaregla -> REGLA = elemento .)
+    $               reduce using rule 7 (unaregla -> REGLA = elemento .)
+    $end            reduce using rule 7 (unaregla -> REGLA = elemento .)
+    |               shift and go to state 34
 
 
 state 26
 
-    (3) reglas -> reglas main .
+    (5) masreglas -> masreglas unaregla .
 
-    $               reduce using rule 3 (reglas -> reglas main .)
-    REGLA           reduce using rule 3 (reglas -> reglas main .)
-    $end            reduce using rule 3 (reglas -> reglas main .)
+    REGLA           reduce using rule 5 (masreglas -> masreglas unaregla .)
+    $               reduce using rule 5 (masreglas -> masreglas unaregla .)
+    $end            reduce using rule 5 (masreglas -> masreglas unaregla .)
 
 
 state 27
+
+    (6) masreglas -> masreglas main .
+
+    REGLA           reduce using rule 6 (masreglas -> masreglas main .)
+    $               reduce using rule 6 (masreglas -> masreglas main .)
+    $end            reduce using rule 6 (masreglas -> masreglas main .)
+
+
+state 28
+
+    (10) main -> $ . = elemento .
+    (11) elemento -> elemento . | elementoand
+
+    REGLA           reduce using rule 10 (main -> $ . = elemento .)
+    $               reduce using rule 10 (main -> $ . = elemento .)
+    $end            reduce using rule 10 (main -> $ . = elemento .)
+    |               shift and go to state 34
+
+
+state 29
 
     (16) elementobase -> elementobase : . trans
     (25) trans -> . RX numero
@@ -601,24 +592,24 @@ state 27
     (37) trans -> . CB numero
     (38) trans -> . D numero
 
-    RX              shift and go to state 39
-    RY              shift and go to state 40
-    RZ              shift and go to state 43
-    S               shift and go to state 41
-    SX              shift and go to state 42
-    SY              shift and go to state 34
-    SZ              shift and go to state 33
-    TX              shift and go to state 36
-    TY              shift and go to state 37
-    TZ              shift and go to state 45
-    CR              shift and go to state 44
-    CG              shift and go to state 38
-    CB              shift and go to state 47
-    D               shift and go to state 35
+    RX              shift and go to state 42
+    RY              shift and go to state 43
+    RZ              shift and go to state 46
+    S               shift and go to state 44
+    SX              shift and go to state 45
+    SY              shift and go to state 37
+    SZ              shift and go to state 36
+    TX              shift and go to state 39
+    TY              shift and go to state 40
+    TZ              shift and go to state 48
+    CR              shift and go to state 47
+    CG              shift and go to state 41
+    CB              shift and go to state 50
+    D               shift and go to state 38
 
-    trans                          shift and go to state 46
+    trans                          shift and go to state 49
 
-state 28
+state 30
 
     (18) elementobase -> elementobase ^ . numero
     (39) numero -> . numero + factor
@@ -629,38 +620,64 @@ state 28
     (44) factor -> . termino
     (45) termino -> . NUM
     (46) termino -> . + NUM
-    (47) termino -> . ( numero )
-    (48) termino -> . + ( numero )
-    (49) termino -> . - ( numero )
+    (47) termino -> . - NUM
+    (48) termino -> . ( numero )
+    (49) termino -> . + ( numero )
+    (50) termino -> . - ( numero )
 
-    NUM             shift and go to state 52
-    +               shift and go to state 49
-    (               shift and go to state 48
-    -               shift and go to state 50
+    NUM             shift and go to state 55
+    +               shift and go to state 52
+    -               shift and go to state 53
+    (               shift and go to state 51
 
-    termino                        shift and go to state 53
-    numero                         shift and go to state 51
-    factor                         shift and go to state 54
+    termino                        shift and go to state 56
+    numero                         shift and go to state 54
+    factor                         shift and go to state 57
 
-state 29
+state 31
+
+    (13) elementoand -> elementoand & . elementobase
+    (15) elementobase -> . prim
+    (16) elementobase -> . elementobase : trans
+    (17) elementobase -> . [ elemento ]
+    (18) elementobase -> . elementobase ^ numero
+    (19) elementobase -> . < elemento >
+    (20) elementobase -> . REGLA
+    (21) elementobase -> . $
+    (22) prim -> . BALL
+    (23) prim -> . BOX
+    (24) prim -> . NADA
+
+    [               shift and go to state 22
+    <               shift and go to state 19
+    REGLA           shift and go to state 16
+    $               shift and go to state 15
+    BALL            shift and go to state 20
+    BOX             shift and go to state 13
+    NADA            shift and go to state 18
+
+    elementobase                   shift and go to state 58
+    prim                           shift and go to state 21
+
+state 32
 
     (19) elementobase -> < elemento . >
     (11) elemento -> elemento . | elementoand
 
-    >               shift and go to state 55
-    |               shift and go to state 31
+    >               shift and go to state 59
+    |               shift and go to state 34
 
 
-state 30
+state 33
 
     (17) elementobase -> [ elemento . ]
     (11) elemento -> elemento . | elementoand
 
-    ]               shift and go to state 56
-    |               shift and go to state 31
+    ]               shift and go to state 60
+    |               shift and go to state 34
 
 
-state 31
+state 34
 
     (11) elemento -> elemento | . elementoand
     (13) elementoand -> . elementoand & elementobase
@@ -670,62 +687,36 @@ state 31
     (17) elementobase -> . [ elemento ]
     (18) elementobase -> . elementobase ^ numero
     (19) elementobase -> . < elemento >
-    (20) elementobase -> . nombreregla
-    (21) elementobase -> . nombremain
+    (20) elementobase -> . REGLA
+    (21) elementobase -> . $
     (22) prim -> . BALL
     (23) prim -> . BOX
     (24) prim -> . NADA
-    (9) nombreregla -> . REGLA
-    (10) nombreregla -> . REGLA .
-    (6) nombremain -> . $
-    (7) nombremain -> . $ .
 
-    [               shift and go to state 21
-    <               shift and go to state 18
-    BALL            shift and go to state 19
-    BOX             shift and go to state 14
-    NADA            shift and go to state 16
-    REGLA           shift and go to state 5
-    $               shift and go to state 4
+    [               shift and go to state 22
+    <               shift and go to state 19
+    REGLA           shift and go to state 16
+    $               shift and go to state 15
+    BALL            shift and go to state 20
+    BOX             shift and go to state 13
+    NADA            shift and go to state 18
 
-    elementobase                   shift and go to state 15
-    elementoand                    shift and go to state 57
-    nombremain                     shift and go to state 24
-    nombreregla                    shift and go to state 20
-    prim                           shift and go to state 17
+    elementobase                   shift and go to state 14
+    elementoand                    shift and go to state 61
+    prim                           shift and go to state 21
 
-state 32
+state 35
 
-    (13) elementoand -> elementoand & . elementobase
-    (15) elementobase -> . prim
-    (16) elementobase -> . elementobase : trans
-    (17) elementobase -> . [ elemento ]
-    (18) elementobase -> . elementobase ^ numero
-    (19) elementobase -> . < elemento >
-    (20) elementobase -> . nombreregla
-    (21) elementobase -> . nombremain
-    (22) prim -> . BALL
-    (23) prim -> . BOX
-    (24) prim -> . NADA
-    (9) nombreregla -> . REGLA
-    (10) nombreregla -> . REGLA .
-    (6) nombremain -> . $
-    (7) nombremain -> . $ .
+    (9) unaregla -> REGLA . = elemento .
+    (11) elemento -> elemento . | elementoand
 
-    [               shift and go to state 21
-    <               shift and go to state 18
-    BALL            shift and go to state 19
-    BOX             shift and go to state 14
-    NADA            shift and go to state 16
-    REGLA           shift and go to state 5
-    $               shift and go to state 4
+    REGLA           reduce using rule 9 (unaregla -> REGLA . = elemento .)
+    $               reduce using rule 9 (unaregla -> REGLA . = elemento .)
+    $end            reduce using rule 9 (unaregla -> REGLA . = elemento .)
+    |               shift and go to state 34
 
-    elementobase                   shift and go to state 58
-    nombremain                     shift and go to state 24
-    nombreregla                    shift and go to state 20
-    prim                           shift and go to state 17
 
-state 33
+state 36
 
     (31) trans -> SZ . numero
     (39) numero -> . numero + factor
@@ -736,20 +727,21 @@ state 33
     (44) factor -> . termino
     (45) termino -> . NUM
     (46) termino -> . + NUM
-    (47) termino -> . ( numero )
-    (48) termino -> . + ( numero )
-    (49) termino -> . - ( numero )
+    (47) termino -> . - NUM
+    (48) termino -> . ( numero )
+    (49) termino -> . + ( numero )
+    (50) termino -> . - ( numero )
 
-    NUM             shift and go to state 52
-    +               shift and go to state 49
-    (               shift and go to state 48
-    -               shift and go to state 50
+    NUM             shift and go to state 55
+    +               shift and go to state 52
+    -               shift and go to state 53
+    (               shift and go to state 51
 
-    termino                        shift and go to state 53
-    numero                         shift and go to state 59
-    factor                         shift and go to state 54
+    termino                        shift and go to state 56
+    numero                         shift and go to state 62
+    factor                         shift and go to state 57
 
-state 34
+state 37
 
     (30) trans -> SY . numero
     (39) numero -> . numero + factor
@@ -760,20 +752,21 @@ state 34
     (44) factor -> . termino
     (45) termino -> . NUM
     (46) termino -> . + NUM
-    (47) termino -> . ( numero )
-    (48) termino -> . + ( numero )
-    (49) termino -> . - ( numero )
+    (47) termino -> . - NUM
+    (48) termino -> . ( numero )
+    (49) termino -> . + ( numero )
+    (50) termino -> . - ( numero )
 
-    NUM             shift and go to state 52
-    +               shift and go to state 49
-    (               shift and go to state 48
-    -               shift and go to state 50
+    NUM             shift and go to state 55
+    +               shift and go to state 52
+    -               shift and go to state 53
+    (               shift and go to state 51
 
-    termino                        shift and go to state 53
-    numero                         shift and go to state 60
-    factor                         shift and go to state 54
+    termino                        shift and go to state 56
+    numero                         shift and go to state 63
+    factor                         shift and go to state 57
 
-state 35
+state 38
 
     (38) trans -> D . numero
     (39) numero -> . numero + factor
@@ -784,20 +777,21 @@ state 35
     (44) factor -> . termino
     (45) termino -> . NUM
     (46) termino -> . + NUM
-    (47) termino -> . ( numero )
-    (48) termino -> . + ( numero )
-    (49) termino -> . - ( numero )
+    (47) termino -> . - NUM
+    (48) termino -> . ( numero )
+    (49) termino -> . + ( numero )
+    (50) termino -> . - ( numero )
 
-    NUM             shift and go to state 52
-    +               shift and go to state 49
-    (               shift and go to state 48
-    -               shift and go to state 50
+    NUM             shift and go to state 55
+    +               shift and go to state 52
+    -               shift and go to state 53
+    (               shift and go to state 51
 
-    termino                        shift and go to state 53
-    numero                         shift and go to state 61
-    factor                         shift and go to state 54
+    termino                        shift and go to state 56
+    numero                         shift and go to state 64
+    factor                         shift and go to state 57
 
-state 36
+state 39
 
     (32) trans -> TX . numero
     (39) numero -> . numero + factor
@@ -808,20 +802,21 @@ state 36
     (44) factor -> . termino
     (45) termino -> . NUM
     (46) termino -> . + NUM
-    (47) termino -> . ( numero )
-    (48) termino -> . + ( numero )
-    (49) termino -> . - ( numero )
+    (47) termino -> . - NUM
+    (48) termino -> . ( numero )
+    (49) termino -> . + ( numero )
+    (50) termino -> . - ( numero )
 
-    NUM             shift and go to state 52
-    +               shift and go to state 49
-    (               shift and go to state 48
-    -               shift and go to state 50
+    NUM             shift and go to state 55
+    +               shift and go to state 52
+    -               shift and go to state 53
+    (               shift and go to state 51
 
-    termino                        shift and go to state 53
-    numero                         shift and go to state 62
-    factor                         shift and go to state 54
+    termino                        shift and go to state 56
+    numero                         shift and go to state 65
+    factor                         shift and go to state 57
 
-state 37
+state 40
 
     (33) trans -> TY . numero
     (39) numero -> . numero + factor
@@ -832,20 +827,21 @@ state 37
     (44) factor -> . termino
     (45) termino -> . NUM
     (46) termino -> . + NUM
-    (47) termino -> . ( numero )
-    (48) termino -> . + ( numero )
-    (49) termino -> . - ( numero )
+    (47) termino -> . - NUM
+    (48) termino -> . ( numero )
+    (49) termino -> . + ( numero )
+    (50) termino -> . - ( numero )
 
-    NUM             shift and go to state 52
-    +               shift and go to state 49
-    (               shift and go to state 48
-    -               shift and go to state 50
+    NUM             shift and go to state 55
+    +               shift and go to state 52
+    -               shift and go to state 53
+    (               shift and go to state 51
 
-    termino                        shift and go to state 53
-    numero                         shift and go to state 63
-    factor                         shift and go to state 54
+    termino                        shift and go to state 56
+    numero                         shift and go to state 66
+    factor                         shift and go to state 57
 
-state 38
+state 41
 
     (36) trans -> CG . numero
     (39) numero -> . numero + factor
@@ -856,20 +852,21 @@ state 38
     (44) factor -> . termino
     (45) termino -> . NUM
     (46) termino -> . + NUM
-    (47) termino -> . ( numero )
-    (48) termino -> . + ( numero )
-    (49) termino -> . - ( numero )
+    (47) termino -> . - NUM
+    (48) termino -> . ( numero )
+    (49) termino -> . + ( numero )
+    (50) termino -> . - ( numero )
 
-    NUM             shift and go to state 52
-    +               shift and go to state 49
-    (               shift and go to state 48
-    -               shift and go to state 50
+    NUM             shift and go to state 55
+    +               shift and go to state 52
+    -               shift and go to state 53
+    (               shift and go to state 51
 
-    termino                        shift and go to state 53
-    numero                         shift and go to state 64
-    factor                         shift and go to state 54
+    termino                        shift and go to state 56
+    numero                         shift and go to state 67
+    factor                         shift and go to state 57
 
-state 39
+state 42
 
     (25) trans -> RX . numero
     (39) numero -> . numero + factor
@@ -880,20 +877,21 @@ state 39
     (44) factor -> . termino
     (45) termino -> . NUM
     (46) termino -> . + NUM
-    (47) termino -> . ( numero )
-    (48) termino -> . + ( numero )
-    (49) termino -> . - ( numero )
+    (47) termino -> . - NUM
+    (48) termino -> . ( numero )
+    (49) termino -> . + ( numero )
+    (50) termino -> . - ( numero )
 
-    NUM             shift and go to state 52
-    +               shift and go to state 49
-    (               shift and go to state 48
-    -               shift and go to state 50
+    NUM             shift and go to state 55
+    +               shift and go to state 52
+    -               shift and go to state 53
+    (               shift and go to state 51
 
-    termino                        shift and go to state 53
-    numero                         shift and go to state 65
-    factor                         shift and go to state 54
+    termino                        shift and go to state 56
+    numero                         shift and go to state 68
+    factor                         shift and go to state 57
 
-state 40
+state 43
 
     (26) trans -> RY . numero
     (39) numero -> . numero + factor
@@ -904,20 +902,21 @@ state 40
     (44) factor -> . termino
     (45) termino -> . NUM
     (46) termino -> . + NUM
-    (47) termino -> . ( numero )
-    (48) termino -> . + ( numero )
-    (49) termino -> . - ( numero )
+    (47) termino -> . - NUM
+    (48) termino -> . ( numero )
+    (49) termino -> . + ( numero )
+    (50) termino -> . - ( numero )
 
-    NUM             shift and go to state 52
-    +               shift and go to state 49
-    (               shift and go to state 48
-    -               shift and go to state 50
+    NUM             shift and go to state 55
+    +               shift and go to state 52
+    -               shift and go to state 53
+    (               shift and go to state 51
 
-    termino                        shift and go to state 53
-    numero                         shift and go to state 66
-    factor                         shift and go to state 54
+    termino                        shift and go to state 56
+    numero                         shift and go to state 69
+    factor                         shift and go to state 57
 
-state 41
+state 44
 
     (28) trans -> S . numero
     (39) numero -> . numero + factor
@@ -928,20 +927,21 @@ state 41
     (44) factor -> . termino
     (45) termino -> . NUM
     (46) termino -> . + NUM
-    (47) termino -> . ( numero )
-    (48) termino -> . + ( numero )
-    (49) termino -> . - ( numero )
+    (47) termino -> . - NUM
+    (48) termino -> . ( numero )
+    (49) termino -> . + ( numero )
+    (50) termino -> . - ( numero )
 
-    NUM             shift and go to state 52
-    +               shift and go to state 49
-    (               shift and go to state 48
-    -               shift and go to state 50
+    NUM             shift and go to state 55
+    +               shift and go to state 52
+    -               shift and go to state 53
+    (               shift and go to state 51
 
-    termino                        shift and go to state 53
-    numero                         shift and go to state 67
-    factor                         shift and go to state 54
+    termino                        shift and go to state 56
+    numero                         shift and go to state 70
+    factor                         shift and go to state 57
 
-state 42
+state 45
 
     (29) trans -> SX . numero
     (39) numero -> . numero + factor
@@ -952,20 +952,21 @@ state 42
     (44) factor -> . termino
     (45) termino -> . NUM
     (46) termino -> . + NUM
-    (47) termino -> . ( numero )
-    (48) termino -> . + ( numero )
-    (49) termino -> . - ( numero )
+    (47) termino -> . - NUM
+    (48) termino -> . ( numero )
+    (49) termino -> . + ( numero )
+    (50) termino -> . - ( numero )
 
-    NUM             shift and go to state 52
-    +               shift and go to state 49
-    (               shift and go to state 48
-    -               shift and go to state 50
+    NUM             shift and go to state 55
+    +               shift and go to state 52
+    -               shift and go to state 53
+    (               shift and go to state 51
 
-    termino                        shift and go to state 53
-    numero                         shift and go to state 68
-    factor                         shift and go to state 54
+    termino                        shift and go to state 56
+    numero                         shift and go to state 71
+    factor                         shift and go to state 57
 
-state 43
+state 46
 
     (27) trans -> RZ . numero
     (39) numero -> . numero + factor
@@ -976,20 +977,21 @@ state 43
     (44) factor -> . termino
     (45) termino -> . NUM
     (46) termino -> . + NUM
-    (47) termino -> . ( numero )
-    (48) termino -> . + ( numero )
-    (49) termino -> . - ( numero )
+    (47) termino -> . - NUM
+    (48) termino -> . ( numero )
+    (49) termino -> . + ( numero )
+    (50) termino -> . - ( numero )
 
-    NUM             shift and go to state 52
-    +               shift and go to state 49
-    (               shift and go to state 48
-    -               shift and go to state 50
+    NUM             shift and go to state 55
+    +               shift and go to state 52
+    -               shift and go to state 53
+    (               shift and go to state 51
 
-    termino                        shift and go to state 53
-    numero                         shift and go to state 69
-    factor                         shift and go to state 54
+    termino                        shift and go to state 56
+    numero                         shift and go to state 72
+    factor                         shift and go to state 57
 
-state 44
+state 47
 
     (35) trans -> CR . numero
     (39) numero -> . numero + factor
@@ -1000,20 +1002,21 @@ state 44
     (44) factor -> . termino
     (45) termino -> . NUM
     (46) termino -> . + NUM
-    (47) termino -> . ( numero )
-    (48) termino -> . + ( numero )
-    (49) termino -> . - ( numero )
+    (47) termino -> . - NUM
+    (48) termino -> . ( numero )
+    (49) termino -> . + ( numero )
+    (50) termino -> . - ( numero )
 
-    NUM             shift and go to state 52
-    +               shift and go to state 49
-    (               shift and go to state 48
-    -               shift and go to state 50
+    NUM             shift and go to state 55
+    +               shift and go to state 52
+    -               shift and go to state 53
+    (               shift and go to state 51
 
-    termino                        shift and go to state 53
-    numero                         shift and go to state 70
-    factor                         shift and go to state 54
+    termino                        shift and go to state 56
+    numero                         shift and go to state 73
+    factor                         shift and go to state 57
 
-state 45
+state 48
 
     (34) trans -> TZ . numero
     (39) numero -> . numero + factor
@@ -1024,35 +1027,36 @@ state 45
     (44) factor -> . termino
     (45) termino -> . NUM
     (46) termino -> . + NUM
-    (47) termino -> . ( numero )
-    (48) termino -> . + ( numero )
-    (49) termino -> . - ( numero )
+    (47) termino -> . - NUM
+    (48) termino -> . ( numero )
+    (49) termino -> . + ( numero )
+    (50) termino -> . - ( numero )
 
-    NUM             shift and go to state 52
-    +               shift and go to state 49
-    (               shift and go to state 48
-    -               shift and go to state 50
+    NUM             shift and go to state 55
+    +               shift and go to state 52
+    -               shift and go to state 53
+    (               shift and go to state 51
 
-    termino                        shift and go to state 53
-    numero                         shift and go to state 71
-    factor                         shift and go to state 54
+    termino                        shift and go to state 56
+    numero                         shift and go to state 74
+    factor                         shift and go to state 57
 
-state 46
+state 49
 
     (16) elementobase -> elementobase : trans .
 
     :               reduce using rule 16 (elementobase -> elementobase : trans .)
     ^               reduce using rule 16 (elementobase -> elementobase : trans .)
     &               reduce using rule 16 (elementobase -> elementobase : trans .)
+    ]               reduce using rule 16 (elementobase -> elementobase : trans .)
     |               reduce using rule 16 (elementobase -> elementobase : trans .)
-    $               reduce using rule 16 (elementobase -> elementobase : trans .)
     REGLA           reduce using rule 16 (elementobase -> elementobase : trans .)
+    $               reduce using rule 16 (elementobase -> elementobase : trans .)
     $end            reduce using rule 16 (elementobase -> elementobase : trans .)
     >               reduce using rule 16 (elementobase -> elementobase : trans .)
-    ]               reduce using rule 16 (elementobase -> elementobase : trans .)
 
 
-state 47
+state 50
 
     (37) trans -> CB . numero
     (39) numero -> . numero + factor
@@ -1063,22 +1067,23 @@ state 47
     (44) factor -> . termino
     (45) termino -> . NUM
     (46) termino -> . + NUM
-    (47) termino -> . ( numero )
-    (48) termino -> . + ( numero )
-    (49) termino -> . - ( numero )
+    (47) termino -> . - NUM
+    (48) termino -> . ( numero )
+    (49) termino -> . + ( numero )
+    (50) termino -> . - ( numero )
 
-    NUM             shift and go to state 52
-    +               shift and go to state 49
-    (               shift and go to state 48
-    -               shift and go to state 50
+    NUM             shift and go to state 55
+    +               shift and go to state 52
+    -               shift and go to state 53
+    (               shift and go to state 51
 
-    termino                        shift and go to state 53
-    numero                         shift and go to state 72
-    factor                         shift and go to state 54
+    termino                        shift and go to state 56
+    numero                         shift and go to state 75
+    factor                         shift and go to state 57
 
-state 48
+state 51
 
-    (47) termino -> ( . numero )
+    (48) termino -> ( . numero )
     (39) numero -> . numero + factor
     (40) numero -> . numero - factor
     (43) numero -> . factor
@@ -1087,36 +1092,39 @@ state 48
     (44) factor -> . termino
     (45) termino -> . NUM
     (46) termino -> . + NUM
-    (47) termino -> . ( numero )
-    (48) termino -> . + ( numero )
-    (49) termino -> . - ( numero )
+    (47) termino -> . - NUM
+    (48) termino -> . ( numero )
+    (49) termino -> . + ( numero )
+    (50) termino -> . - ( numero )
 
-    NUM             shift and go to state 52
-    +               shift and go to state 49
-    (               shift and go to state 48
-    -               shift and go to state 50
+    NUM             shift and go to state 55
+    +               shift and go to state 52
+    -               shift and go to state 53
+    (               shift and go to state 51
 
-    termino                        shift and go to state 53
-    numero                         shift and go to state 73
-    factor                         shift and go to state 54
+    termino                        shift and go to state 56
+    numero                         shift and go to state 76
+    factor                         shift and go to state 57
 
-state 49
+state 52
 
     (46) termino -> + . NUM
-    (48) termino -> + . ( numero )
+    (49) termino -> + . ( numero )
 
-    NUM             shift and go to state 75
-    (               shift and go to state 74
-
-
-state 50
-
-    (49) termino -> - . ( numero )
-
-    (               shift and go to state 76
+    NUM             shift and go to state 78
+    (               shift and go to state 77
 
 
-state 51
+state 53
+
+    (47) termino -> - . NUM
+    (50) termino -> - . ( numero )
+
+    NUM             shift and go to state 80
+    (               shift and go to state 79
+
+
+state 54
 
     (18) elementobase -> elementobase ^ numero .
     (39) numero -> numero . + factor
@@ -1125,17 +1133,17 @@ state 51
     :               reduce using rule 18 (elementobase -> elementobase ^ numero .)
     ^               reduce using rule 18 (elementobase -> elementobase ^ numero .)
     &               reduce using rule 18 (elementobase -> elementobase ^ numero .)
+    ]               reduce using rule 18 (elementobase -> elementobase ^ numero .)
     |               reduce using rule 18 (elementobase -> elementobase ^ numero .)
-    $               reduce using rule 18 (elementobase -> elementobase ^ numero .)
     REGLA           reduce using rule 18 (elementobase -> elementobase ^ numero .)
+    $               reduce using rule 18 (elementobase -> elementobase ^ numero .)
     $end            reduce using rule 18 (elementobase -> elementobase ^ numero .)
     >               reduce using rule 18 (elementobase -> elementobase ^ numero .)
-    ]               reduce using rule 18 (elementobase -> elementobase ^ numero .)
-    +               shift and go to state 77
-    -               shift and go to state 78
+    +               shift and go to state 81
+    -               shift and go to state 82
 
 
-state 52
+state 55
 
     (45) termino -> NUM .
 
@@ -1147,15 +1155,15 @@ state 52
     ^               reduce using rule 45 (termino -> NUM .)
     &               reduce using rule 45 (termino -> NUM .)
     |               reduce using rule 45 (termino -> NUM .)
-    $               reduce using rule 45 (termino -> NUM .)
     REGLA           reduce using rule 45 (termino -> NUM .)
+    $               reduce using rule 45 (termino -> NUM .)
     $end            reduce using rule 45 (termino -> NUM .)
     >               reduce using rule 45 (termino -> NUM .)
     ]               reduce using rule 45 (termino -> NUM .)
     )               reduce using rule 45 (termino -> NUM .)
 
 
-state 53
+state 56
 
     (44) factor -> termino .
 
@@ -1167,15 +1175,15 @@ state 53
     ^               reduce using rule 44 (factor -> termino .)
     &               reduce using rule 44 (factor -> termino .)
     |               reduce using rule 44 (factor -> termino .)
-    $               reduce using rule 44 (factor -> termino .)
     REGLA           reduce using rule 44 (factor -> termino .)
+    $               reduce using rule 44 (factor -> termino .)
     $end            reduce using rule 44 (factor -> termino .)
     >               reduce using rule 44 (factor -> termino .)
     ]               reduce using rule 44 (factor -> termino .)
     )               reduce using rule 44 (factor -> termino .)
 
 
-state 54
+state 57
 
     (43) numero -> factor .
     (41) factor -> factor . * termino
@@ -1187,58 +1195,14 @@ state 54
     ^               reduce using rule 43 (numero -> factor .)
     &               reduce using rule 43 (numero -> factor .)
     |               reduce using rule 43 (numero -> factor .)
-    $               reduce using rule 43 (numero -> factor .)
     REGLA           reduce using rule 43 (numero -> factor .)
+    $               reduce using rule 43 (numero -> factor .)
     $end            reduce using rule 43 (numero -> factor .)
     >               reduce using rule 43 (numero -> factor .)
     ]               reduce using rule 43 (numero -> factor .)
     )               reduce using rule 43 (numero -> factor .)
-    *               shift and go to state 79
-    /               shift and go to state 80
-
-
-state 55
-
-    (19) elementobase -> < elemento > .
-
-    :               reduce using rule 19 (elementobase -> < elemento > .)
-    ^               reduce using rule 19 (elementobase -> < elemento > .)
-    &               reduce using rule 19 (elementobase -> < elemento > .)
-    |               reduce using rule 19 (elementobase -> < elemento > .)
-    $               reduce using rule 19 (elementobase -> < elemento > .)
-    REGLA           reduce using rule 19 (elementobase -> < elemento > .)
-    $end            reduce using rule 19 (elementobase -> < elemento > .)
-    >               reduce using rule 19 (elementobase -> < elemento > .)
-    ]               reduce using rule 19 (elementobase -> < elemento > .)
-
-
-state 56
-
-    (17) elementobase -> [ elemento ] .
-
-    :               reduce using rule 17 (elementobase -> [ elemento ] .)
-    ^               reduce using rule 17 (elementobase -> [ elemento ] .)
-    &               reduce using rule 17 (elementobase -> [ elemento ] .)
-    |               reduce using rule 17 (elementobase -> [ elemento ] .)
-    $               reduce using rule 17 (elementobase -> [ elemento ] .)
-    REGLA           reduce using rule 17 (elementobase -> [ elemento ] .)
-    $end            reduce using rule 17 (elementobase -> [ elemento ] .)
-    >               reduce using rule 17 (elementobase -> [ elemento ] .)
-    ]               reduce using rule 17 (elementobase -> [ elemento ] .)
-
-
-state 57
-
-    (11) elemento -> elemento | elementoand .
-    (13) elementoand -> elementoand . & elementobase
-
-    |               reduce using rule 11 (elemento -> elemento | elementoand .)
-    $               reduce using rule 11 (elemento -> elemento | elementoand .)
-    REGLA           reduce using rule 11 (elemento -> elemento | elementoand .)
-    $end            reduce using rule 11 (elemento -> elemento | elementoand .)
-    >               reduce using rule 11 (elemento -> elemento | elementoand .)
-    ]               reduce using rule 11 (elemento -> elemento | elementoand .)
-    &               shift and go to state 32
+    *               shift and go to state 83
+    /               shift and go to state 84
 
 
 state 58
@@ -1252,13 +1216,57 @@ state 58
     $               reduce using rule 13 (elementoand -> elementoand & elementobase .)
     REGLA           reduce using rule 13 (elementoand -> elementoand & elementobase .)
     $end            reduce using rule 13 (elementoand -> elementoand & elementobase .)
-    >               reduce using rule 13 (elementoand -> elementoand & elementobase .)
     ]               reduce using rule 13 (elementoand -> elementoand & elementobase .)
-    :               shift and go to state 27
-    ^               shift and go to state 28
+    >               reduce using rule 13 (elementoand -> elementoand & elementobase .)
+    :               shift and go to state 29
+    ^               shift and go to state 30
 
 
 state 59
+
+    (19) elementobase -> < elemento > .
+
+    :               reduce using rule 19 (elementobase -> < elemento > .)
+    ^               reduce using rule 19 (elementobase -> < elemento > .)
+    &               reduce using rule 19 (elementobase -> < elemento > .)
+    ]               reduce using rule 19 (elementobase -> < elemento > .)
+    |               reduce using rule 19 (elementobase -> < elemento > .)
+    REGLA           reduce using rule 19 (elementobase -> < elemento > .)
+    $               reduce using rule 19 (elementobase -> < elemento > .)
+    $end            reduce using rule 19 (elementobase -> < elemento > .)
+    >               reduce using rule 19 (elementobase -> < elemento > .)
+
+
+state 60
+
+    (17) elementobase -> [ elemento ] .
+
+    :               reduce using rule 17 (elementobase -> [ elemento ] .)
+    ^               reduce using rule 17 (elementobase -> [ elemento ] .)
+    &               reduce using rule 17 (elementobase -> [ elemento ] .)
+    ]               reduce using rule 17 (elementobase -> [ elemento ] .)
+    |               reduce using rule 17 (elementobase -> [ elemento ] .)
+    REGLA           reduce using rule 17 (elementobase -> [ elemento ] .)
+    $               reduce using rule 17 (elementobase -> [ elemento ] .)
+    $end            reduce using rule 17 (elementobase -> [ elemento ] .)
+    >               reduce using rule 17 (elementobase -> [ elemento ] .)
+
+
+state 61
+
+    (11) elemento -> elemento | elementoand .
+    (13) elementoand -> elementoand . & elementobase
+
+    >               reduce using rule 11 (elemento -> elemento | elementoand .)
+    |               reduce using rule 11 (elemento -> elemento | elementoand .)
+    REGLA           reduce using rule 11 (elemento -> elemento | elementoand .)
+    $               reduce using rule 11 (elemento -> elemento | elementoand .)
+    $end            reduce using rule 11 (elemento -> elemento | elementoand .)
+    ]               reduce using rule 11 (elemento -> elemento | elementoand .)
+    &               shift and go to state 31
+
+
+state 62
 
     (31) trans -> SZ numero .
     (39) numero -> numero . + factor
@@ -1268,16 +1276,16 @@ state 59
     ^               reduce using rule 31 (trans -> SZ numero .)
     &               reduce using rule 31 (trans -> SZ numero .)
     |               reduce using rule 31 (trans -> SZ numero .)
-    $               reduce using rule 31 (trans -> SZ numero .)
     REGLA           reduce using rule 31 (trans -> SZ numero .)
+    $               reduce using rule 31 (trans -> SZ numero .)
     $end            reduce using rule 31 (trans -> SZ numero .)
     >               reduce using rule 31 (trans -> SZ numero .)
     ]               reduce using rule 31 (trans -> SZ numero .)
-    +               shift and go to state 77
-    -               shift and go to state 78
+    +               shift and go to state 81
+    -               shift and go to state 82
 
 
-state 60
+state 63
 
     (30) trans -> SY numero .
     (39) numero -> numero . + factor
@@ -1287,16 +1295,16 @@ state 60
     ^               reduce using rule 30 (trans -> SY numero .)
     &               reduce using rule 30 (trans -> SY numero .)
     |               reduce using rule 30 (trans -> SY numero .)
-    $               reduce using rule 30 (trans -> SY numero .)
     REGLA           reduce using rule 30 (trans -> SY numero .)
+    $               reduce using rule 30 (trans -> SY numero .)
     $end            reduce using rule 30 (trans -> SY numero .)
     >               reduce using rule 30 (trans -> SY numero .)
     ]               reduce using rule 30 (trans -> SY numero .)
-    +               shift and go to state 77
-    -               shift and go to state 78
+    +               shift and go to state 81
+    -               shift and go to state 82
 
 
-state 61
+state 64
 
     (38) trans -> D numero .
     (39) numero -> numero . + factor
@@ -1306,16 +1314,16 @@ state 61
     ^               reduce using rule 38 (trans -> D numero .)
     &               reduce using rule 38 (trans -> D numero .)
     |               reduce using rule 38 (trans -> D numero .)
-    $               reduce using rule 38 (trans -> D numero .)
     REGLA           reduce using rule 38 (trans -> D numero .)
+    $               reduce using rule 38 (trans -> D numero .)
     $end            reduce using rule 38 (trans -> D numero .)
     >               reduce using rule 38 (trans -> D numero .)
     ]               reduce using rule 38 (trans -> D numero .)
-    +               shift and go to state 77
-    -               shift and go to state 78
+    +               shift and go to state 81
+    -               shift and go to state 82
 
 
-state 62
+state 65
 
     (32) trans -> TX numero .
     (39) numero -> numero . + factor
@@ -1325,16 +1333,16 @@ state 62
     ^               reduce using rule 32 (trans -> TX numero .)
     &               reduce using rule 32 (trans -> TX numero .)
     |               reduce using rule 32 (trans -> TX numero .)
-    $               reduce using rule 32 (trans -> TX numero .)
     REGLA           reduce using rule 32 (trans -> TX numero .)
+    $               reduce using rule 32 (trans -> TX numero .)
     $end            reduce using rule 32 (trans -> TX numero .)
     >               reduce using rule 32 (trans -> TX numero .)
     ]               reduce using rule 32 (trans -> TX numero .)
-    +               shift and go to state 77
-    -               shift and go to state 78
+    +               shift and go to state 81
+    -               shift and go to state 82
 
 
-state 63
+state 66
 
     (33) trans -> TY numero .
     (39) numero -> numero . + factor
@@ -1344,16 +1352,16 @@ state 63
     ^               reduce using rule 33 (trans -> TY numero .)
     &               reduce using rule 33 (trans -> TY numero .)
     |               reduce using rule 33 (trans -> TY numero .)
-    $               reduce using rule 33 (trans -> TY numero .)
     REGLA           reduce using rule 33 (trans -> TY numero .)
+    $               reduce using rule 33 (trans -> TY numero .)
     $end            reduce using rule 33 (trans -> TY numero .)
     >               reduce using rule 33 (trans -> TY numero .)
     ]               reduce using rule 33 (trans -> TY numero .)
-    +               shift and go to state 77
-    -               shift and go to state 78
+    +               shift and go to state 81
+    -               shift and go to state 82
 
 
-state 64
+state 67
 
     (36) trans -> CG numero .
     (39) numero -> numero . + factor
@@ -1363,16 +1371,16 @@ state 64
     ^               reduce using rule 36 (trans -> CG numero .)
     &               reduce using rule 36 (trans -> CG numero .)
     |               reduce using rule 36 (trans -> CG numero .)
-    $               reduce using rule 36 (trans -> CG numero .)
     REGLA           reduce using rule 36 (trans -> CG numero .)
+    $               reduce using rule 36 (trans -> CG numero .)
     $end            reduce using rule 36 (trans -> CG numero .)
     >               reduce using rule 36 (trans -> CG numero .)
     ]               reduce using rule 36 (trans -> CG numero .)
-    +               shift and go to state 77
-    -               shift and go to state 78
+    +               shift and go to state 81
+    -               shift and go to state 82
 
 
-state 65
+state 68
 
     (25) trans -> RX numero .
     (39) numero -> numero . + factor
@@ -1382,16 +1390,16 @@ state 65
     ^               reduce using rule 25 (trans -> RX numero .)
     &               reduce using rule 25 (trans -> RX numero .)
     |               reduce using rule 25 (trans -> RX numero .)
-    $               reduce using rule 25 (trans -> RX numero .)
     REGLA           reduce using rule 25 (trans -> RX numero .)
+    $               reduce using rule 25 (trans -> RX numero .)
     $end            reduce using rule 25 (trans -> RX numero .)
     >               reduce using rule 25 (trans -> RX numero .)
     ]               reduce using rule 25 (trans -> RX numero .)
-    +               shift and go to state 77
-    -               shift and go to state 78
+    +               shift and go to state 81
+    -               shift and go to state 82
 
 
-state 66
+state 69
 
     (26) trans -> RY numero .
     (39) numero -> numero . + factor
@@ -1401,16 +1409,16 @@ state 66
     ^               reduce using rule 26 (trans -> RY numero .)
     &               reduce using rule 26 (trans -> RY numero .)
     |               reduce using rule 26 (trans -> RY numero .)
-    $               reduce using rule 26 (trans -> RY numero .)
     REGLA           reduce using rule 26 (trans -> RY numero .)
+    $               reduce using rule 26 (trans -> RY numero .)
     $end            reduce using rule 26 (trans -> RY numero .)
     >               reduce using rule 26 (trans -> RY numero .)
     ]               reduce using rule 26 (trans -> RY numero .)
-    +               shift and go to state 77
-    -               shift and go to state 78
+    +               shift and go to state 81
+    -               shift and go to state 82
 
 
-state 67
+state 70
 
     (28) trans -> S numero .
     (39) numero -> numero . + factor
@@ -1420,16 +1428,16 @@ state 67
     ^               reduce using rule 28 (trans -> S numero .)
     &               reduce using rule 28 (trans -> S numero .)
     |               reduce using rule 28 (trans -> S numero .)
-    $               reduce using rule 28 (trans -> S numero .)
     REGLA           reduce using rule 28 (trans -> S numero .)
+    $               reduce using rule 28 (trans -> S numero .)
     $end            reduce using rule 28 (trans -> S numero .)
     >               reduce using rule 28 (trans -> S numero .)
     ]               reduce using rule 28 (trans -> S numero .)
-    +               shift and go to state 77
-    -               shift and go to state 78
+    +               shift and go to state 81
+    -               shift and go to state 82
 
 
-state 68
+state 71
 
     (29) trans -> SX numero .
     (39) numero -> numero . + factor
@@ -1439,16 +1447,16 @@ state 68
     ^               reduce using rule 29 (trans -> SX numero .)
     &               reduce using rule 29 (trans -> SX numero .)
     |               reduce using rule 29 (trans -> SX numero .)
-    $               reduce using rule 29 (trans -> SX numero .)
     REGLA           reduce using rule 29 (trans -> SX numero .)
+    $               reduce using rule 29 (trans -> SX numero .)
     $end            reduce using rule 29 (trans -> SX numero .)
     >               reduce using rule 29 (trans -> SX numero .)
     ]               reduce using rule 29 (trans -> SX numero .)
-    +               shift and go to state 77
-    -               shift and go to state 78
+    +               shift and go to state 81
+    -               shift and go to state 82
 
 
-state 69
+state 72
 
     (27) trans -> RZ numero .
     (39) numero -> numero . + factor
@@ -1458,16 +1466,16 @@ state 69
     ^               reduce using rule 27 (trans -> RZ numero .)
     &               reduce using rule 27 (trans -> RZ numero .)
     |               reduce using rule 27 (trans -> RZ numero .)
-    $               reduce using rule 27 (trans -> RZ numero .)
     REGLA           reduce using rule 27 (trans -> RZ numero .)
+    $               reduce using rule 27 (trans -> RZ numero .)
     $end            reduce using rule 27 (trans -> RZ numero .)
     >               reduce using rule 27 (trans -> RZ numero .)
     ]               reduce using rule 27 (trans -> RZ numero .)
-    +               shift and go to state 77
-    -               shift and go to state 78
+    +               shift and go to state 81
+    -               shift and go to state 82
 
 
-state 70
+state 73
 
     (35) trans -> CR numero .
     (39) numero -> numero . + factor
@@ -1477,16 +1485,16 @@ state 70
     ^               reduce using rule 35 (trans -> CR numero .)
     &               reduce using rule 35 (trans -> CR numero .)
     |               reduce using rule 35 (trans -> CR numero .)
-    $               reduce using rule 35 (trans -> CR numero .)
     REGLA           reduce using rule 35 (trans -> CR numero .)
+    $               reduce using rule 35 (trans -> CR numero .)
     $end            reduce using rule 35 (trans -> CR numero .)
     >               reduce using rule 35 (trans -> CR numero .)
     ]               reduce using rule 35 (trans -> CR numero .)
-    +               shift and go to state 77
-    -               shift and go to state 78
+    +               shift and go to state 81
+    -               shift and go to state 82
 
 
-state 71
+state 74
 
     (34) trans -> TZ numero .
     (39) numero -> numero . + factor
@@ -1496,16 +1504,16 @@ state 71
     ^               reduce using rule 34 (trans -> TZ numero .)
     &               reduce using rule 34 (trans -> TZ numero .)
     |               reduce using rule 34 (trans -> TZ numero .)
-    $               reduce using rule 34 (trans -> TZ numero .)
     REGLA           reduce using rule 34 (trans -> TZ numero .)
+    $               reduce using rule 34 (trans -> TZ numero .)
     $end            reduce using rule 34 (trans -> TZ numero .)
     >               reduce using rule 34 (trans -> TZ numero .)
     ]               reduce using rule 34 (trans -> TZ numero .)
-    +               shift and go to state 77
-    -               shift and go to state 78
+    +               shift and go to state 81
+    -               shift and go to state 82
 
 
-state 72
+state 75
 
     (37) trans -> CB numero .
     (39) numero -> numero . + factor
@@ -1515,29 +1523,29 @@ state 72
     ^               reduce using rule 37 (trans -> CB numero .)
     &               reduce using rule 37 (trans -> CB numero .)
     |               reduce using rule 37 (trans -> CB numero .)
-    $               reduce using rule 37 (trans -> CB numero .)
     REGLA           reduce using rule 37 (trans -> CB numero .)
+    $               reduce using rule 37 (trans -> CB numero .)
     $end            reduce using rule 37 (trans -> CB numero .)
     >               reduce using rule 37 (trans -> CB numero .)
     ]               reduce using rule 37 (trans -> CB numero .)
-    +               shift and go to state 77
-    -               shift and go to state 78
+    +               shift and go to state 81
+    -               shift and go to state 82
 
 
-state 73
+state 76
 
-    (47) termino -> ( numero . )
+    (48) termino -> ( numero . )
     (39) numero -> numero . + factor
     (40) numero -> numero . - factor
 
-    )               shift and go to state 81
-    +               shift and go to state 77
-    -               shift and go to state 78
+    )               shift and go to state 85
+    +               shift and go to state 81
+    -               shift and go to state 82
 
 
-state 74
+state 77
 
-    (48) termino -> + ( . numero )
+    (49) termino -> + ( . numero )
     (39) numero -> . numero + factor
     (40) numero -> . numero - factor
     (43) numero -> . factor
@@ -1546,20 +1554,21 @@ state 74
     (44) factor -> . termino
     (45) termino -> . NUM
     (46) termino -> . + NUM
-    (47) termino -> . ( numero )
-    (48) termino -> . + ( numero )
-    (49) termino -> . - ( numero )
+    (47) termino -> . - NUM
+    (48) termino -> . ( numero )
+    (49) termino -> . + ( numero )
+    (50) termino -> . - ( numero )
 
-    NUM             shift and go to state 52
-    +               shift and go to state 49
-    (               shift and go to state 48
-    -               shift and go to state 50
+    NUM             shift and go to state 55
+    +               shift and go to state 52
+    -               shift and go to state 53
+    (               shift and go to state 51
 
-    termino                        shift and go to state 53
-    numero                         shift and go to state 82
-    factor                         shift and go to state 54
+    termino                        shift and go to state 56
+    numero                         shift and go to state 86
+    factor                         shift and go to state 57
 
-state 75
+state 78
 
     (46) termino -> + NUM .
 
@@ -1571,17 +1580,17 @@ state 75
     ^               reduce using rule 46 (termino -> + NUM .)
     &               reduce using rule 46 (termino -> + NUM .)
     |               reduce using rule 46 (termino -> + NUM .)
-    $               reduce using rule 46 (termino -> + NUM .)
     REGLA           reduce using rule 46 (termino -> + NUM .)
+    $               reduce using rule 46 (termino -> + NUM .)
     $end            reduce using rule 46 (termino -> + NUM .)
     >               reduce using rule 46 (termino -> + NUM .)
     ]               reduce using rule 46 (termino -> + NUM .)
     )               reduce using rule 46 (termino -> + NUM .)
 
 
-state 76
+state 79
 
-    (49) termino -> - ( . numero )
+    (50) termino -> - ( . numero )
     (39) numero -> . numero + factor
     (40) numero -> . numero - factor
     (43) numero -> . factor
@@ -1590,20 +1599,41 @@ state 76
     (44) factor -> . termino
     (45) termino -> . NUM
     (46) termino -> . + NUM
-    (47) termino -> . ( numero )
-    (48) termino -> . + ( numero )
-    (49) termino -> . - ( numero )
+    (47) termino -> . - NUM
+    (48) termino -> . ( numero )
+    (49) termino -> . + ( numero )
+    (50) termino -> . - ( numero )
 
-    NUM             shift and go to state 52
-    +               shift and go to state 49
-    (               shift and go to state 48
-    -               shift and go to state 50
+    NUM             shift and go to state 55
+    +               shift and go to state 52
+    -               shift and go to state 53
+    (               shift and go to state 51
 
-    termino                        shift and go to state 53
-    numero                         shift and go to state 83
-    factor                         shift and go to state 54
+    termino                        shift and go to state 56
+    numero                         shift and go to state 87
+    factor                         shift and go to state 57
 
-state 77
+state 80
+
+    (47) termino -> - NUM .
+
+    *               reduce using rule 47 (termino -> - NUM .)
+    /               reduce using rule 47 (termino -> - NUM .)
+    +               reduce using rule 47 (termino -> - NUM .)
+    -               reduce using rule 47 (termino -> - NUM .)
+    :               reduce using rule 47 (termino -> - NUM .)
+    ^               reduce using rule 47 (termino -> - NUM .)
+    &               reduce using rule 47 (termino -> - NUM .)
+    |               reduce using rule 47 (termino -> - NUM .)
+    REGLA           reduce using rule 47 (termino -> - NUM .)
+    $               reduce using rule 47 (termino -> - NUM .)
+    $end            reduce using rule 47 (termino -> - NUM .)
+    >               reduce using rule 47 (termino -> - NUM .)
+    ]               reduce using rule 47 (termino -> - NUM .)
+    )               reduce using rule 47 (termino -> - NUM .)
+
+
+state 81
 
     (39) numero -> numero + . factor
     (41) factor -> . factor * termino
@@ -1611,19 +1641,20 @@ state 77
     (44) factor -> . termino
     (45) termino -> . NUM
     (46) termino -> . + NUM
-    (47) termino -> . ( numero )
-    (48) termino -> . + ( numero )
-    (49) termino -> . - ( numero )
+    (47) termino -> . - NUM
+    (48) termino -> . ( numero )
+    (49) termino -> . + ( numero )
+    (50) termino -> . - ( numero )
 
-    NUM             shift and go to state 52
-    +               shift and go to state 49
-    (               shift and go to state 48
-    -               shift and go to state 50
+    NUM             shift and go to state 55
+    +               shift and go to state 52
+    -               shift and go to state 53
+    (               shift and go to state 51
 
-    termino                        shift and go to state 53
-    factor                         shift and go to state 84
+    termino                        shift and go to state 56
+    factor                         shift and go to state 88
 
-state 78
+state 82
 
     (40) numero -> numero - . factor
     (41) factor -> . factor * termino
@@ -1631,93 +1662,96 @@ state 78
     (44) factor -> . termino
     (45) termino -> . NUM
     (46) termino -> . + NUM
-    (47) termino -> . ( numero )
-    (48) termino -> . + ( numero )
-    (49) termino -> . - ( numero )
+    (47) termino -> . - NUM
+    (48) termino -> . ( numero )
+    (49) termino -> . + ( numero )
+    (50) termino -> . - ( numero )
 
-    NUM             shift and go to state 52
-    +               shift and go to state 49
-    (               shift and go to state 48
-    -               shift and go to state 50
+    NUM             shift and go to state 55
+    +               shift and go to state 52
+    -               shift and go to state 53
+    (               shift and go to state 51
 
-    termino                        shift and go to state 53
-    factor                         shift and go to state 85
+    termino                        shift and go to state 56
+    factor                         shift and go to state 89
 
-state 79
+state 83
 
     (41) factor -> factor * . termino
     (45) termino -> . NUM
     (46) termino -> . + NUM
-    (47) termino -> . ( numero )
-    (48) termino -> . + ( numero )
-    (49) termino -> . - ( numero )
+    (47) termino -> . - NUM
+    (48) termino -> . ( numero )
+    (49) termino -> . + ( numero )
+    (50) termino -> . - ( numero )
 
-    NUM             shift and go to state 52
-    +               shift and go to state 49
-    (               shift and go to state 48
-    -               shift and go to state 50
+    NUM             shift and go to state 55
+    +               shift and go to state 52
+    -               shift and go to state 53
+    (               shift and go to state 51
 
-    termino                        shift and go to state 86
+    termino                        shift and go to state 90
 
-state 80
+state 84
 
     (42) factor -> factor / . termino
     (45) termino -> . NUM
     (46) termino -> . + NUM
-    (47) termino -> . ( numero )
-    (48) termino -> . + ( numero )
-    (49) termino -> . - ( numero )
+    (47) termino -> . - NUM
+    (48) termino -> . ( numero )
+    (49) termino -> . + ( numero )
+    (50) termino -> . - ( numero )
 
-    NUM             shift and go to state 52
-    +               shift and go to state 49
-    (               shift and go to state 48
-    -               shift and go to state 50
+    NUM             shift and go to state 55
+    +               shift and go to state 52
+    -               shift and go to state 53
+    (               shift and go to state 51
 
-    termino                        shift and go to state 87
+    termino                        shift and go to state 91
 
-state 81
+state 85
 
-    (47) termino -> ( numero ) .
+    (48) termino -> ( numero ) .
 
-    *               reduce using rule 47 (termino -> ( numero ) .)
-    /               reduce using rule 47 (termino -> ( numero ) .)
-    +               reduce using rule 47 (termino -> ( numero ) .)
-    -               reduce using rule 47 (termino -> ( numero ) .)
-    :               reduce using rule 47 (termino -> ( numero ) .)
-    ^               reduce using rule 47 (termino -> ( numero ) .)
-    &               reduce using rule 47 (termino -> ( numero ) .)
-    |               reduce using rule 47 (termino -> ( numero ) .)
-    $               reduce using rule 47 (termino -> ( numero ) .)
-    REGLA           reduce using rule 47 (termino -> ( numero ) .)
-    $end            reduce using rule 47 (termino -> ( numero ) .)
-    >               reduce using rule 47 (termino -> ( numero ) .)
-    ]               reduce using rule 47 (termino -> ( numero ) .)
-    )               reduce using rule 47 (termino -> ( numero ) .)
+    *               reduce using rule 48 (termino -> ( numero ) .)
+    /               reduce using rule 48 (termino -> ( numero ) .)
+    +               reduce using rule 48 (termino -> ( numero ) .)
+    -               reduce using rule 48 (termino -> ( numero ) .)
+    :               reduce using rule 48 (termino -> ( numero ) .)
+    ^               reduce using rule 48 (termino -> ( numero ) .)
+    &               reduce using rule 48 (termino -> ( numero ) .)
+    |               reduce using rule 48 (termino -> ( numero ) .)
+    REGLA           reduce using rule 48 (termino -> ( numero ) .)
+    $               reduce using rule 48 (termino -> ( numero ) .)
+    $end            reduce using rule 48 (termino -> ( numero ) .)
+    >               reduce using rule 48 (termino -> ( numero ) .)
+    ]               reduce using rule 48 (termino -> ( numero ) .)
+    )               reduce using rule 48 (termino -> ( numero ) .)
 
 
-state 82
+state 86
 
-    (48) termino -> + ( numero . )
+    (49) termino -> + ( numero . )
     (39) numero -> numero . + factor
     (40) numero -> numero . - factor
 
-    )               shift and go to state 88
-    +               shift and go to state 77
-    -               shift and go to state 78
+    )               shift and go to state 92
+    +               shift and go to state 81
+    -               shift and go to state 82
 
 
-state 83
+state 87
 
-    (49) termino -> - ( numero . )
+    (50) termino -> - ( numero . )
     (39) numero -> numero . + factor
     (40) numero -> numero . - factor
 
-    )               shift and go to state 89
-    +               shift and go to state 77
-    -               shift and go to state 78
+    )               shift and go to state 93
+    +               shift and go to state 81
+    -               shift and go to state 82
 
 
-state 84
+state 88
 
     (39) numero -> numero + factor .
     (41) factor -> factor . * termino
@@ -1729,17 +1763,17 @@ state 84
     ^               reduce using rule 39 (numero -> numero + factor .)
     &               reduce using rule 39 (numero -> numero + factor .)
     |               reduce using rule 39 (numero -> numero + factor .)
-    $               reduce using rule 39 (numero -> numero + factor .)
     REGLA           reduce using rule 39 (numero -> numero + factor .)
+    $               reduce using rule 39 (numero -> numero + factor .)
     $end            reduce using rule 39 (numero -> numero + factor .)
     >               reduce using rule 39 (numero -> numero + factor .)
     ]               reduce using rule 39 (numero -> numero + factor .)
     )               reduce using rule 39 (numero -> numero + factor .)
-    *               shift and go to state 79
-    /               shift and go to state 80
+    *               shift and go to state 83
+    /               shift and go to state 84
 
 
-state 85
+state 89
 
     (40) numero -> numero - factor .
     (41) factor -> factor . * termino
@@ -1751,17 +1785,17 @@ state 85
     ^               reduce using rule 40 (numero -> numero - factor .)
     &               reduce using rule 40 (numero -> numero - factor .)
     |               reduce using rule 40 (numero -> numero - factor .)
-    $               reduce using rule 40 (numero -> numero - factor .)
     REGLA           reduce using rule 40 (numero -> numero - factor .)
+    $               reduce using rule 40 (numero -> numero - factor .)
     $end            reduce using rule 40 (numero -> numero - factor .)
     >               reduce using rule 40 (numero -> numero - factor .)
     ]               reduce using rule 40 (numero -> numero - factor .)
     )               reduce using rule 40 (numero -> numero - factor .)
-    *               shift and go to state 79
-    /               shift and go to state 80
+    *               shift and go to state 83
+    /               shift and go to state 84
 
 
-state 86
+state 90
 
     (41) factor -> factor * termino .
 
@@ -1773,15 +1807,15 @@ state 86
     ^               reduce using rule 41 (factor -> factor * termino .)
     &               reduce using rule 41 (factor -> factor * termino .)
     |               reduce using rule 41 (factor -> factor * termino .)
-    $               reduce using rule 41 (factor -> factor * termino .)
     REGLA           reduce using rule 41 (factor -> factor * termino .)
+    $               reduce using rule 41 (factor -> factor * termino .)
     $end            reduce using rule 41 (factor -> factor * termino .)
     >               reduce using rule 41 (factor -> factor * termino .)
     ]               reduce using rule 41 (factor -> factor * termino .)
     )               reduce using rule 41 (factor -> factor * termino .)
 
 
-state 87
+state 91
 
     (42) factor -> factor / termino .
 
@@ -1793,55 +1827,50 @@ state 87
     ^               reduce using rule 42 (factor -> factor / termino .)
     &               reduce using rule 42 (factor -> factor / termino .)
     |               reduce using rule 42 (factor -> factor / termino .)
-    $               reduce using rule 42 (factor -> factor / termino .)
     REGLA           reduce using rule 42 (factor -> factor / termino .)
+    $               reduce using rule 42 (factor -> factor / termino .)
     $end            reduce using rule 42 (factor -> factor / termino .)
     >               reduce using rule 42 (factor -> factor / termino .)
     ]               reduce using rule 42 (factor -> factor / termino .)
     )               reduce using rule 42 (factor -> factor / termino .)
 
 
-state 88
+state 92
 
-    (48) termino -> + ( numero ) .
+    (49) termino -> + ( numero ) .
 
-    *               reduce using rule 48 (termino -> + ( numero ) .)
-    /               reduce using rule 48 (termino -> + ( numero ) .)
-    +               reduce using rule 48 (termino -> + ( numero ) .)
-    -               reduce using rule 48 (termino -> + ( numero ) .)
-    :               reduce using rule 48 (termino -> + ( numero ) .)
-    ^               reduce using rule 48 (termino -> + ( numero ) .)
-    &               reduce using rule 48 (termino -> + ( numero ) .)
-    |               reduce using rule 48 (termino -> + ( numero ) .)
-    $               reduce using rule 48 (termino -> + ( numero ) .)
-    REGLA           reduce using rule 48 (termino -> + ( numero ) .)
-    $end            reduce using rule 48 (termino -> + ( numero ) .)
-    >               reduce using rule 48 (termino -> + ( numero ) .)
-    ]               reduce using rule 48 (termino -> + ( numero ) .)
-    )               reduce using rule 48 (termino -> + ( numero ) .)
+    *               reduce using rule 49 (termino -> + ( numero ) .)
+    /               reduce using rule 49 (termino -> + ( numero ) .)
+    +               reduce using rule 49 (termino -> + ( numero ) .)
+    -               reduce using rule 49 (termino -> + ( numero ) .)
+    :               reduce using rule 49 (termino -> + ( numero ) .)
+    ^               reduce using rule 49 (termino -> + ( numero ) .)
+    &               reduce using rule 49 (termino -> + ( numero ) .)
+    |               reduce using rule 49 (termino -> + ( numero ) .)
+    REGLA           reduce using rule 49 (termino -> + ( numero ) .)
+    $               reduce using rule 49 (termino -> + ( numero ) .)
+    $end            reduce using rule 49 (termino -> + ( numero ) .)
+    >               reduce using rule 49 (termino -> + ( numero ) .)
+    ]               reduce using rule 49 (termino -> + ( numero ) .)
+    )               reduce using rule 49 (termino -> + ( numero ) .)
 
 
-state 89
+state 93
 
-    (49) termino -> - ( numero ) .
+    (50) termino -> - ( numero ) .
 
-    *               reduce using rule 49 (termino -> - ( numero ) .)
-    /               reduce using rule 49 (termino -> - ( numero ) .)
-    +               reduce using rule 49 (termino -> - ( numero ) .)
-    -               reduce using rule 49 (termino -> - ( numero ) .)
-    :               reduce using rule 49 (termino -> - ( numero ) .)
-    ^               reduce using rule 49 (termino -> - ( numero ) .)
-    &               reduce using rule 49 (termino -> - ( numero ) .)
-    |               reduce using rule 49 (termino -> - ( numero ) .)
-    $               reduce using rule 49 (termino -> - ( numero ) .)
-    REGLA           reduce using rule 49 (termino -> - ( numero ) .)
-    $end            reduce using rule 49 (termino -> - ( numero ) .)
-    >               reduce using rule 49 (termino -> - ( numero ) .)
-    ]               reduce using rule 49 (termino -> - ( numero ) .)
-    )               reduce using rule 49 (termino -> - ( numero ) .)
+    *               reduce using rule 50 (termino -> - ( numero ) .)
+    /               reduce using rule 50 (termino -> - ( numero ) .)
+    +               reduce using rule 50 (termino -> - ( numero ) .)
+    -               reduce using rule 50 (termino -> - ( numero ) .)
+    :               reduce using rule 50 (termino -> - ( numero ) .)
+    ^               reduce using rule 50 (termino -> - ( numero ) .)
+    &               reduce using rule 50 (termino -> - ( numero ) .)
+    |               reduce using rule 50 (termino -> - ( numero ) .)
+    REGLA           reduce using rule 50 (termino -> - ( numero ) .)
+    $               reduce using rule 50 (termino -> - ( numero ) .)
+    $end            reduce using rule 50 (termino -> - ( numero ) .)
+    >               reduce using rule 50 (termino -> - ( numero ) .)
+    ]               reduce using rule 50 (termino -> - ( numero ) .)
+    )               reduce using rule 50 (termino -> - ( numero ) .)
 
-WARNING: 
-WARNING: Conflicts:
-WARNING: 
-WARNING: reduce/reduce conflict in state 8 resolved using rule (reglas -> <empty>)
-WARNING: rejected rule (reglas -> reglas main) in state 8

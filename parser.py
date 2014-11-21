@@ -10,51 +10,54 @@ from visual import *
 import numpy as np
 from elemento import *
 
+reglas = {}
+finales ={}
+
 def p_programa(t):
-	'programa : reglas main reglas'
-	print 'programa : reglas main reglas'
-	t[0] = t[2]
-	t[0].mostrar()
+	'programa : reglas main masreglas'
+	print 'programa : reglas main masreglas'
+	reglas['$'].mostrar()
 	
 def p_reglas_empty(t):
-	'reglas :'
-	print 'reglas :'
+	'''reglas :
+	masreglas :'''
+	print '''reglas/masreglas  empty'''
 	pass
-
-def p_reglas_main(t):
-	'reglas : reglas main'
-	print 'reglas : reglas main'
 
 def p_reglas_unaregla(t):
 	'reglas : reglas unaregla'
 	print 'reglas : reglas unaregla'
+
+def p_masreglas_unaregla(t):
+	'masreglas : masreglas unaregla'
+	print 'masreglas : masreglas unaregla'
+
+def p_masreglas_main(t):
+	'masreglas : masreglas main'
+	print 'masreglas : masreglas main'
 	
-def p_main(t):
-	"main : nombremain '=' elemento"
-	print "main : nombremain '=' elemento"
-	t[0]=t[3]
-
-def p_nombremain(t):
-	"nombremain : '$'"
-	print "nombremain : '$'"
-	t[0] = t[1] 
-
-def p_nombremain_final(t):
-	"nombremain : '$' '.'"
-	print "nombremain : '$' '.'"
-	t[0] = t[1]+'.'
-
 def p_unaregla(t):
-	"unaregla : nombreregla '=' elemento"
-	print "unaregla : nombreregla '=' elemento"
-	
-def p_nombreregla(t):
-	'nombreregla : REGLA'
-	print 'nombreregla : REGLA'
+	'''unaregla : REGLA '=' elemento
+	   main : '$' '=' elemento'''
+	reglas[t[1]] = reglas.get(t[1],ElementoOR()).append(t[3])
+	print '''unaregla/main : REGLA '=' elemento"
+	   main : '$' '=' elemento'''
 
-def p_nombreregla_final(t):
-	"nombreregla : REGLA '.'"
-	print "nombreregla : REGLA '.'"
+def p_unaregla_final(t):
+	'''unaregla : REGLA '.' '=' elemento
+	   main : '$' '.' '=' elemento'''
+	reglas[t[1]] = reglas.get(t[1],ElementoOR()).append(t[3])
+	finales[t[1]] = finales.get(t[1],ElementoOR()).append(t[3])
+	print '''unaregla : REGLA '.' '=' elemento
+	   main : '$' '.' '=' elemento'''
+	
+# def p_nombreregla(t):
+# 	'nombreregla : REGLA'
+# 	print 'nombreregla : REGLA'
+
+# def p_nombreregla_final(t):
+# 	"nombreregla : REGLA '.'"
+# 	print "nombreregla : REGLA '.'"
 
 def p_elemento(t):
 	"elemento : elemento '|' elementoand"
@@ -64,7 +67,7 @@ def p_elemento(t):
 def p_elemento_salteo(t):
 	'elemento : elementoand'
 	print 'elemento : elementoand'
-	t[0]=ElementoOR(inicial=t[1])
+	t[0]=ElementoOR().append(t[1])
 
 def p_elementoand(t):
 	"elementoand : elementoand '&' elementobase"
@@ -73,7 +76,7 @@ def p_elementoand(t):
 
 def p_elementoand_salteo(t):
 	'elementoand : elementobase'
-	t[0]=ElementoAND(inicial=t[1])
+	t[0]=ElementoAND().append(t[1])
 	print 'elementoand : elementobase'
 
 def p_elementobase_prim(t):
@@ -96,16 +99,16 @@ def p_elementobase_pot(t):
 
 def p_elementobase_maymen(t):
 	"elementobase : '<' elemento '>'"
-	t[0]= ElementoOR(inicial=Nada()).append(t[2])
+	t[0]= ElementoOR().append(Nada()).append(t[2])
 	print "elementobase : '<' elemento '>'"
 
 def p_elementobase_nombreregla(t):
-	'elementobase : nombreregla'
-	print 'elementobase : nombreregla'
+	'elementobase : REGLA'
+	print 'elementobase : REGLA'
 
 def p_elementobase_nombremain(t):
-	"elementobase : nombremain"
-	print "elementobase : nombremain"
+	"elementobase : '$' "
+	print "elementobase : '$' "
 
 def p_ball(t):
 	'prim : BALL'
@@ -245,7 +248,7 @@ def p_termino_parentesis_mas(t):
 	t[0] = t[3]
 	print "termino : '+' '(' numero ')' "
 
-def p_termino_menos(t):
+def p_termino_parentesis_menos(t):
 	"termino : '-' '(' numero ')' "
 	t[0] = -1 * t[3]
 	print "termino : '-' '(' numero ')' "
@@ -260,4 +263,3 @@ with open(sys.argv[1], 'r') as content_file:
 	content = content_file.read()
 #print content
 result = parser.parse(content)
-print result

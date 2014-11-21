@@ -6,10 +6,9 @@ Terminales: { box ball nada
 No terminales {
 	Programa
 	Reglas
+	Masreglas
 	Main
 	UnaRegla
-	NombreMain
-	NombreRegla
 	Elemento
 	Elementoand
 	Elementobase
@@ -24,21 +23,20 @@ Simbolo distinguido: Programa
 
 Producciones:
 
-Programa -> Reglas Main Reglas // Debe haber si o si una regla main
+Programa -> Reglas Main Masreglas // Debe haber si o si una regla main
 
 Reglas -> LAMBDA
-Reglas -> Reglas Main
 Reglas -> Reglas Unaregla
 
-Main -> Nombremain = Elemento
+Masreglas -> LAMBDA
+Masreglas -> Masreglas Main
+Masreglas -> Masreglas Unaregla
 
-Nombremain -> $
-Nombremain -> $.
+Main -> $ = Elemento
+Main -> $ . = Elemento
 
-Unaregla -> Nombreregla=Elemento
-
-Nombreregla -> regla
-Nombreregla -> regla.
+Unaregla -> regla = Elemento
+Unaregla -> regla . = Elemento
 
 Elemento -> Elemento | Elementoand
 Elemento -> Elementoand
@@ -51,8 +49,8 @@ Elementobase -> Elementobase : Trans
 Elementobase -> [ Elemento ]
 Elementobase -> Elementobase ^ Numero
 Elementobase -> < Elemento >
-Elementobase -> Nombreregla
-Elementobase -> Nombremain
+Elementobase -> regla
+Elementobase -> $
 
 Prim -> ball
 Prim -> box

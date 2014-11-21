@@ -58,9 +58,9 @@ class Nada(Primitiva):
 		pass
 #------------------------------------------------------------------------
 class Compuesta(Elemento):
-	def __init__(self,inicial):
+	def __init__(self):
 		self.elementos = []
-		self.elementos.append(inicial)
+		#self.elementos.append(inicial)
 
 	def append(self,elemento):
 		self.elementos.append(elemento)
