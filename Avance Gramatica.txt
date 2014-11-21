@@ -1,26 +1,34 @@
-Alfabeto: { prim trans num regla . : | & [ ] < > ^ = $ + _ * / ( ) }
+Terminales: { box ball nada
+			rx ry rz sx sy sz s tx ty tz cr cg cb d
+			num regla . : | & [ ] < > ^ = $ + * / ( )
+		}
 
-Tokens: 
-	prim: { box ball _ }
-	trans: { rx ry rz sx sy sz s tx ty tz cr cg cb d }
-	num: float
-	regla: string
-	
-Esto no debería ser un token 
-	coment: "string" este token se ignora en el lexer
+No terminales {
+	Programa
+	Reglas
+	Main
+	UnaRegla
+	NombreMain
+	NombreRegla
+	Elemento
+	Elementoand
+	Elementobase
+	Prim
+	Trans
+	Numero
+	Factor
+	Termino
+}
 
 Simbolo distinguido: Programa
 
 Producciones:
 
-Programa -> Reglas Main Masreglas
+Programa -> Reglas Main Reglas // Debe haber si o si una regla main
 
-Reglas -> Reglas Unaregla
 Reglas -> LAMBDA
-
-Masreglas -> Masreglas Main
-Masreglas -> Masreglas Unaregla
-Masreglas -> LAMBDA
+Reglas -> Reglas Main
+Reglas -> Reglas Unaregla
 
 Main -> Nombremain = Elemento
 
@@ -38,13 +46,32 @@ Elemento -> Elementoand
 Elementoand -> Elementoand & Elementobase
 Elementoand -> Elementobase
 
-Elementobase -> prim
-Elementobase -> Elementobase : trans Numero
+Elementobase -> Prim
+Elementobase -> Elementobase : Trans
 Elementobase -> [ Elemento ]
 Elementobase -> Elementobase ^ Numero
 Elementobase -> < Elemento >
 Elementobase -> Nombreregla
 Elementobase -> Nombremain
+
+Prim -> ball
+Prim -> box
+Prim -> nada
+
+Trans -> rx Numero
+Trans -> ry Numero
+Trans -> rz Numero
+Trans -> s Numero
+Trans -> sx Numero
+Trans -> sy Numero
+Trans -> sz Numero
+Trans -> tx Numero
+Trans -> ty Numero
+Trans -> tz Numero
+Trans -> cr Numero
+Trans -> cg Numero
+Trans -> cb Numero
+Trans -> d Numero
 
 Numero -> Numero + Factor
 Numero -> Numero - Factor
@@ -54,7 +81,9 @@ Factor -> Factor * Termino
 Factor -> Factor / Termino
 Factor -> Termino
 
-Termino -> ( Numero )
 Termino -> num
-Termino -> +num
-Termino -> -num
+Termino -> + num
+Termino -> - num
+Termino -> ( Numero )
+Termino -> + ( Numero )
+Termino -> - ( Numero )

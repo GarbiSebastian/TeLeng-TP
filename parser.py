@@ -81,6 +81,32 @@ def p_elementobase_prim(t):
 	t[0]=t[1]
 	print 'elementobase : prim'
 
+def p_elementobase_trans(t):
+	"elementobase : elementobase ':' trans"
+	t[0] = t[1].transformar(t[3])
+	print "elementobase : elementobase ':' trans"
+
+def p_elementobase_corchete(t):
+	"elementobase : '[' elemento ']'"
+	print "elementobase : '[' elemento ']'"
+
+def p_elementobase_pot(t):
+	"elementobase : elementobase '^' numero"
+	print "elementobase : elementobase '^' numero"
+
+def p_elementobase_maymen(t):
+	"elementobase : '<' elemento '>'"
+	t[0]= ElementoOR(inicial=Nada()).append(t[2])
+	print "elementobase : '<' elemento '>'"
+
+def p_elementobase_nombreregla(t):
+	'elementobase : nombreregla'
+	print 'elementobase : nombreregla'
+
+def p_elementobase_nombremain(t):
+	"elementobase : nombremain"
+	print "elementobase : nombremain"
+
 def p_ball(t):
 	'prim : BALL'
 	t[0]=Ball()
@@ -95,11 +121,6 @@ def p_nada(t):
 	'prim : NADA'
 	t[0]=Nada()
 	print 'prim : NADA'
-
-def p_elementobase_trans(t):
-	"elementobase : elementobase ':' trans"
-	t[0] = t[1].transformar(t[3])
-	print "elementobase : elementobase ':' trans"
 
 def p_trans_rx(t):
 	'trans : RX numero'
@@ -182,27 +203,6 @@ def p_trans_d(t):
 	t[0]= TransD(d=num)	
 	print 'trans : D numero'
 
-def p_elementobase_corchete(t):
-	"elementobase : '[' elemento ']'"
-	print "elementobase : '[' elemento ']'"
-
-def p_elementobase_pot(t):
-	"elementobase : elementobase '^' numero"
-	print "elementobase : elementobase '^' numero"
-
-def p_elementobase_maymen(t):
-	"elementobase : '<' elemento '>'"
-	t[0]= ElementoOR(inicial=Nada()).append(t[2])
-	print "elementobase : '<' elemento '>'"
-
-def p_elementobase_nombreregla(t):
-	'elementobase : nombreregla'
-	print 'elementobase : nombreregla'
-
-def p_elementobase_nombremain(t):
-	"elementobase : nombremain"
-	print "elementobase : nombremain"
-
 def p_numero_mas_factor(t):
 	"numero : numero '+' factor"
 	t[0] = t[1] + t[3]
@@ -235,6 +235,11 @@ def p_termino_menos(t):
 	t[0] = -1 * t[2]
 	print "termino : '-' NUM"
 
+def p_termino_parentesis(t):
+	"termino : '(' numero ')'"
+	t[0] = t[2]
+	print "termino : '(' numero ')'"
+
 def p_termino_parentesis_mas(t):
 	"termino : '+' '(' numero ')' "
 	t[0] = t[3]
@@ -245,11 +250,6 @@ def p_termino_menos(t):
 	t[0] = -1 * t[3]
 	print "termino : '-' '(' numero ')' "
 	   
-def p_termino_parentesis(t):
-	"termino : '(' numero ')'"
-	t[0] = t[2]
-	print "termino : '(' numero ')'"
-	
 # Error rule for syntax errors.
 def p_error(t):
 	raise SyntaxError("invalid syntax")
