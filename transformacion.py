@@ -1,26 +1,27 @@
 import sys
 import numpy as np
 from math import *
+from copy import deepcopy
 
 class Transformacion(object):
 	def __init__(self):
 		self.space = np.identity(4)
 		self.color = np.array([1,1,1])
+		self.depth = 100
 		
 	def transformar(self,trans):
 		self.space = np.dot(self.space,trans.space)
 		self.color = self.color * trans.color
-
-	def esD(self):
-		return False
+		self.depth = min(self.depth, trans.depth)
 
 	def debug(self):
 		print 'space'
 		print self.space
 		print 'color'
 		print self.color
+		print 'depth'
+		print self.depth
 #------------------------------------------------------------------------
-
 class TransRX(Transformacion):
 	def __init__(self,num):
 		super(TransRX,self).__init__()
@@ -58,7 +59,3 @@ class TransD(Transformacion):
 	def __init__(self,d=100):
 		super(TransD,self).__init__()
 		self.depth = d
-		self.nombre = None
-
-	def esD(self):
-		return True

@@ -1,0 +1,3 @@
+$=spiral:d10
+spiral=ball&spiral:tx1:rz15:s0.9
+spiral.=ball:cb0:cg0&spiral:tx1:rz15:s0.9

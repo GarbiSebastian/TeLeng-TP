@@ -79,12 +79,12 @@ def t_error(t):
 # Build the lexer.
 #lex.lex()
 lexer = lex.lex()
-with open(sys.argv[1], 'r') as content_file:
- 	content = content_file.read()
- #print content
-lexeado = lexer.input(content)
-while True:
-	tok = lexer.token()
-	if not tok:
- 		break
- 	print tok
+#with open(sys.argv[1], 'r') as content_file:
+# 	content = content_file.read()
+#print content
+#lexeado = lexer.input(content)
+# while True:
+# 	tok = lexer.token()
+# 	if not tok:
+#  		break
+#  	print tok
