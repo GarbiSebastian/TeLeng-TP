@@ -1,0 +1,191 @@
+Reglas -> LAMBDA
+Elementobase -> REGLA
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> D Numero
+Elementobase -> Elementobase : Trans
+Elementoand -> Elementobase
+Elemento -> Elementoand
+Main -> $ = Elemento
+Masreglas -> LAMBDA
+Elementobase -> REGLA
+Elementoand -> Elementobase
+Elementobase -> REGLA
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> TY Numero
+Elementobase -> Elementobase : Trans
+Elementoand -> Elementoand & Elementobase
+Elemento -> Elementoand
+Unaregla -> REGLA = Elemento
+Masreglas -> Masreglas Unaregla
+Prim -> BOX
+Elementobase -> Prim
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> CR Numero
+Elementobase -> Elementobase : Trans
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> CG Numero
+Elementobase -> Elementobase : Trans
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> CB Numero
+Elementobase -> Elementobase : Trans
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> SX Numero
+Elementobase -> Elementobase : Trans
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> SZ Numero
+Elementobase -> Elementobase : Trans
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> TY Numero
+Elementobase -> Elementobase : Trans
+Elementoand -> Elementobase
+Elemento -> Elementoand
+Unaregla -> REGLA = Elemento
+Masreglas -> Masreglas Unaregla
+Elementobase -> REGLA
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> S Numero
+Elementobase -> Elementobase : Trans
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> RZ Numero
+Elementobase -> Elementobase : Trans
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> CG Numero
+Elementobase -> Elementobase : Trans
+Elementoand -> Elementobase
+Elemento -> Elementoand
+Elementobase -> <Elemento>
+Elementoand -> Elementobase
+Elemento -> Elementoand
+Elementobase -> [Elemento]
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> RY Numero
+Elementobase -> Elementobase : Trans
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Elementobase -> Elementobase^Numero
+Elementoand -> Elementobase
+Elemento -> Elementoand
+Unaregla -> REGLA = Elemento
+Masreglas -> Masreglas Unaregla
+Elementobase -> REGLA
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> S Numero
+Elementobase -> Elementobase : Trans
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> RZ Numero
+Elementobase -> Elementobase : Trans
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> CG Numero
+Elementobase -> Elementobase : Trans
+Elementoand -> Elementobase
+Elemento -> Elementoand
+Elementobase -> <Elemento>
+Elementoand -> Elementobase
+Elemento -> Elementoand
+Elementobase -> [Elemento]
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> RY Numero
+Elementobase -> Elementobase : Trans
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Elementobase -> Elementobase^Numero
+Elementoand -> Elementobase
+Elemento -> Elementoand
+Unaregla -> REGLA = Elemento
+Masreglas -> Masreglas Unaregla
+Elementobase -> REGLA
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> S Numero
+Elementobase -> Elementobase : Trans
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> RZ Numero
+Elementobase -> Elementobase : Trans
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> CG Numero
+Elementobase -> Elementobase : Trans
+Elementoand -> Elementobase
+Elemento -> Elementoand
+Elementobase -> <Elemento>
+Elementoand -> Elementobase
+Elemento -> Elementoand
+Elementobase -> [Elemento]
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> RY Numero
+Elementobase -> Elementobase : Trans
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Elementobase -> Elementobase^Numero
+Elementoand -> Elementobase
+Elemento -> Elementoand
+Unaregla -> REGLA = Elemento
+Masreglas -> Masreglas Unaregla
+Prim -> BALL
+Elementobase -> Prim
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> CR Numero
+Elementobase -> Elementobase : Trans
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> CB Numero
+Elementobase -> Elementobase : Trans
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> S Numero
+Elementobase -> Elementobase : Trans
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> TY Numero
+Elementobase -> Elementobase : Trans
+Elementoand -> Elementobase
+Elemento -> Elementoand
+Unaregla -> REGLA. = Elemento
+Masreglas -> Masreglas Unaregla
+Programa -> Reglas Main Masreglas

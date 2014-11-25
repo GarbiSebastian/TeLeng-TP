@@ -1,0 +1,181 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc} % para poder usar tildes en archivos UTF-8
+\usepackage[spanish]{babel} % para que comandos como \today den el resultado en castellano
+\usepackage{a4wide} % márgenes un poco más anchos que lo usual
+\usepackage[conEntregas]{caratula}
+\usepackage{hyperref} % para hipervínculos
+\usepackage{amsmath} % para matemática en varias lineas
+\usepackage{synttree} % para arboles de derivación
+
+\begin{document}
+
+\titulo{Trabajo Práctico}
+\subtitulo{Parser para gramática PEGS }
+
+\fecha{\today}
+
+\materia{Teoría de Lenguajes de Programación}
+\grupo{Grupo 10}
+
+\integrante{Garbi, Sebastían}{179/05}{garbyseba@gmail.com}
+\integrante{Sarries, Ana}{144/02}{anasarries@yahoo.com.ar}
+% Pongan cuantos integrantes quieran
+
+\maketitle
+
+\section{Introducción}
+\section{Gramática}
+Para interpretar el lenguaje se generó la gramática $G = \left<{V_n,V_t,P,Programa}\right>$ donde:
+\begin{itemize}
+\item $V_n$ es: \{Elemento, Elementoand, Elementobase, Factor, Main, Masreglas, Numero, Prim, Programa, Reglas, Termino, Trans, Unaregla\}
+\item $V_t$ es:\{\$, \&, (, ), *, +, -, ., /, :, $<$, =, $>$, BALL, BOX, CB, CG, CR, D, NADA, NUM, REGLA, RX, RY, RZ, S, SX, SY, SZ, TX, TY, TZ, [, ], \^{},$\vert$ \}
+\item Producciones P:\\
+$Programa\rightarrow{}Reglas\;Main\;Masreglas$\\
+$Reglas\rightarrow{}\lambda$\\
+$Reglas\rightarrow{}Reglas\;Unaregla$\\
+$Main\rightarrow{}\$\;=\;Elemento$\\
+$Main\rightarrow{}\$.\;=\;Elemento$\\
+$Masreglas\rightarrow{}\lambda$\\
+$Masreglas\rightarrow{}Masreglas\;Unaregla$\\
+$Masreglas\rightarrow{}Masreglas\;Main$\\
+$Unaregla\rightarrow{}\textbf{REGLA}\;=\;Elemento$\\
+$Unaregla\rightarrow{}\textbf{REGLA.}\;=\;Elemento$\\
+$Elemento\rightarrow{}Elemento\;|\;Elementoand$\\
+$Elemento\rightarrow{}Elementoand$\\
+$Elementoand\rightarrow{}Elementoand\;\&\;Elementobase$\\
+$Elementoand\rightarrow{}Elementobase$\\
+$Elementobase\rightarrow{}Prim$\\
+$Elementobase\rightarrow{}Elementobase\;:\;Trans$\\
+$Elementobase\rightarrow{}[\;Elemento\;]$\\
+$Elementobase\rightarrow{}Elementobase\;{}^\wedge\;Numero$\\
+$Elementobase\rightarrow{}<\;Elemento\;>$\\
+$Elementobase\rightarrow{}\textbf{REGLA}$\\
+$Elementobase\rightarrow{}\$$\\
+$Prim\rightarrow{}\textbf{BALL}$\\
+$Prim\rightarrow{}\textbf{BOX}$\\
+$Prim\rightarrow{}\textbf{NADA}$\\
+$Trans\rightarrow{}\textbf{RX}\;Numero$\\
+$Trans\rightarrow{}\textbf{RY}\;Numero$\\
+$Trans\rightarrow{}\textbf{RZ}\;Numero$\\
+$Trans\rightarrow{}\textbf{S}\;Numero$\\
+$Trans\rightarrow{}\textbf{SX}\;Numero$\\
+$Trans\rightarrow{}\textbf{SY}\;Numero$\\
+$Trans\rightarrow{}\textbf{SZ}\;Numero$\\
+$Trans\rightarrow{}\textbf{TX}\;Numero$\\
+$Trans\rightarrow{}\textbf{TY}\;Numero$\\
+$Trans\rightarrow{}\textbf{TZ}\;Numero$\\
+$Trans\rightarrow{}\textbf{CR}\;Numero$\\
+$Trans\rightarrow{}\textbf{CG}\;Numero$\\
+$Trans\rightarrow{}\textbf{CB}\;Numero$\\
+$Trans\rightarrow{}\textbf{D}\;Numero$\\
+$Numero\rightarrow{}Numero\;+\;Factor$\\
+$Numero\rightarrow{}Numero\;-\;Factor$\\
+$Numero\rightarrow{}Factor$\\
+$Factor\rightarrow{}Factor\;*\;Termino$\\
+$Factor\rightarrow{}Factor\;/\;Termino$\\
+$Factor\rightarrow{}Termino$\\
+$Termino\rightarrow{}\textbf{NUM}$\\
+$Termino\rightarrow{}+\;\textbf{NUM}$\\
+$Termino\rightarrow{}-\;\textbf{NUM}$\\
+$Termino\rightarrow{}(\;Numero\;)$\\
+$Termino\rightarrow{}+\;(\;Numero\;)$\\
+$Termino\rightarrow{}-\;(\;Numero\;)$\\
+\end{itemize}
+De $V_t$ cabe destacar el token $\textbf{NADA}$ que es el que representa al caractér ``\_'',  el token $\textbf{REGLA}$ que se corresponde con la expresión regular `\lbrack a-zA-Z\rbrack+' y el token $\textbf{NUM}$ con la expresión regular `\textbackslash d+(\textbackslash .\textbackslash d+)?'.\\
+Los demás tokens se corresponden literalmente con su texto en minúscula, por ejemplo $BALL$ con la palabra ``ball''.\\
+Para que estos últimos no sean tokenizados como $\textbf{REGLA}$ se usó el ejemplo de palabras reservadas que aparece en la sección \textbf{4.3} de la documentación de ply (\url{http://www.dabeaz.com/ply/ply.html#ply_nn6}).
+
+\section{Implementación de la solución}
+La solución consiste de dos grandes pasos.\\
+El primero ocurre mientras se ejecuta el analizador sintáctico, en este paso se ``sintetiza'' en el \textbf{NT} que generó la producción el objeto que va a ser mostrado así también las transformaciones que sufre el mismo.
+Para las producciones donde se define un nombre de regla\footnote{Estamos utilizando que \$ es un nombre de regla}, por ejemplo ``$bola=ball|box$'', utilizamos dos diccionarios globales ``reglas'' y ``finales''. Si la regla no es final se define solo en el diccionario ``reglas'', en cambio si es final (tiene `.') se define en ambos diccionarios.\\
+El segundo paso es al momento de mostrar, en este paso se toma del diccionario ``reglas'' la definición de \textbf{\$} y se le ejecuta el método mostrar que se encargará de mostrar todos los elementos que se generaron durante el parseo.\\
+\\
+Para la solución se crearon dos jerarquías de clases que interactúan entre sí. Una es la que se refiere a las transformaciones:\\
+De Transformacion heredan TransRX, TransRY, TransRZ, TransT, TransS, TransC, TransD, cada una de ellas representa un tipo de transformación según su nombre lo indica. A su vez las instancias directas de Transformacion se corresponde con la transformación identidad, la cual al ser aplicada no efectúa ningún cambio.
+La otra jerarquía es la de Elementos:
+De Elemento heredan Primitiva, Compuesta, ElementoPOT, ElementoCorchete y ElementoREGLA. De Primitiva heredan Ball, Box y Nada, y de Compuesta heredan ElementoOR, ElementoAND y  ElementoANDTransformaDirecto.\\
+Las clases del subárbol de Primitiva representan cada una un objeto final que se mostrará en la composición visual final.\\
+Las clases del subárbol de Compuesta implementan un patrón ``composite'' los cuales reenviaran a sus contenidos los mensajes que reciban.\\
+Las clases ElementoCorchete y ElementoPOT también siguen este patrón pero conteniendo un solo elemento.\\
+La clase ElementoCorchete tiene mensajes especiales para interactuar con ElementoPOT, en caso de que ésta última lo contenga, en otro caso simplemente reenvía los mensajes a su elemento contenido.\\
+Todos los Elementos tienen implementados los métodos para interactuar con ElementoPOT de forma tal que éste los repita sin el comportamiento especial que tiene ElementoCorchete.\\
+\\
+Teniendo en cuenta que puede haber más de una definición del mismo nombre de regla y que esto es equivalente a tener un `\textbar' entre las dos definiciones, todas las definiciones del diccionario reglas son ElementoOR al cual se van agregando las nuevas definiciones, teniendo así un único valor para la misma clave el cual se encargara de decidir cual de las definiciones aplicar\footnote{Al ser tratada cada definición como Elementos diferentes, ésto no afecta a los `\textbar' internos de cada definición}.\\
+\begin{align}
+\left.\begin{matrix}Reg = A\\
+Reg = B\\
+\end{matrix}\right\} \equiv Reg = A|B
+\end{align}
+\\
+Los elementos tienen estados inicializados con la transformación identidad. Cada vez que reciben una transformación se modifica dicho estado.
+
+\section{Arboles de derivación}
+En esta sección se van a presentar algunos ejemplos parseados junto con los arboles de derivación que genera cada entrada.\\
+\begin{itemize}
+\item{$\$=box$\\
+\synttree
+[Programa
+	[Reglas [ $\lambda$] ]
+	[Main
+		[\$]
+		[=]
+		[Elemento
+			[Elementoand
+				[Elementobase
+					[Prim [BOX] ]
+				]
+			]
+		]
+	]
+	[Masreglas [ $\lambda$] ]
+]
+}
+\item{$\$=ball\&box:tx1$\\
+\synttree
+[Programa
+	[Reglas [ $\lambda$] ]
+	[Main [\$] [=]
+		[Elmento [Elementoand [Elementoand [Elementobase [Prim [BALL]]]][\&] [Elementobase [Elementobase [Prim [BOX]]] [ : ] [Trans [TX] [Numero [Factor [Termino [NUM] ] ] ]]]]]]
+	[Masreglas [ $\lambda$] ]
+]}
+\pagebreak
+\item{$A=ball$\\
+$\$=A|B|\_$\\
+$B=box$\\
+\synttree
+[Programa[Reglas*1][Main[\$][=][Elemento[Elemento[Elemento[Elementoand[Elementobase[REGLA]]]][\textbar][Elementoand[Elementobase[REGLA]]]][\textbar][Elementoand[Elementobase[Prim [NADA]]]]]][Masreglas*2]]\\
+\synttree
+[Reglas*1[Reglas[$\lambda$]][Unaregla[REGLA][=][Elemento[Elementoand[Elementobase[Prim[BALL]]]]]]]
+\synttree
+[Masreglas*2[Masreglas[$\lambda$]][Unaregla[REGLA][=][Elemento[Elementoand[Elementobase[Prim[BOX]]]]]]]
+}
+\end{itemize}
+
+En el directorio Derivaciones se puede encontrar las listas de producciones utilizadas para generar cada uno de los ejemplos del directorio TL2014C2-TP-Ejemplos. Estas listas conforman las derivaciones mas a la derecha invertidas generadas por el parser LALR
+\section{Algunos resultados}
+\subsection{Resultados válidos}
+\subsection{Resultados inválidos}
+\section{Ejecución}
+El programa debe ser ejecutado de la siguiente manera:\\
+$python\;parser.py\;ruta/al/archivo.peg$\\
+
+En el archivo parser.py hay tres variables boolenas globales útiles para mostrar más información:\\
+	$mostrarTokens$ Imprime la lista de Tokens que generó el analizador léxico\\
+	$mostrarEjes$ Muestra en la composición visual los ejes X(Rojo) Y(Verde) Z(Azul) centrado en el origen desde -5 a +5 en cada eje\\
+	$mostrarProducciones$ Muestra la lista de producciones generada por el parser LALR\\
+\section{Detalle de requerimientos}
+	Para la implementación del trabajo práctico se utilizaron las bibliotecas de Python:
+\begin{itemize}
+\item sys
+\item numpy
+\item math
+\item copy 
+\item visual (VPython)
+\item random
+\item ply
+\item re
+\end{itemize}
+\section{Desiciones}
+\section{Conclusión}
+\end{document}

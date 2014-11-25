@@ -1,0 +1,21 @@
+Reglas -> LAMBDA
+Prim -> BOX
+Elementobase -> Prim
+Termino -> - NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> TX Numero
+Elementobase -> Elementobase : Trans
+Elementoand -> Elementobase
+Prim -> BALL
+Elementobase -> Prim
+Termino -> NUM
+Factor -> Termino
+Numero -> Factor
+Trans -> TX Numero
+Elementobase -> Elementobase : Trans
+Elementoand -> Elementoand & Elementobase
+Elemento -> Elementoand
+Main -> $ = Elemento
+Masreglas -> LAMBDA
+Programa -> Reglas Main Masreglas

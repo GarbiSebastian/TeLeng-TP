@@ -35,8 +35,8 @@ finales = {}
 verificar = []
 
 def verificarReglas():
-	for regla in verificar:
-		if regla not in reglas:
+	for reg in verificar:
+		if reg not in reglas:
 			p_error()
 
 def p_programa(t):
@@ -47,10 +47,15 @@ def p_programa(t):
 	reglas['$'].mostrar()
 	
 def p_reglas_empty(t):
-	'''reglas :
-	masreglas :'''
+	'reglas :'
 	if mostrarProducciones:
-		print 'Reglas -> LAMBDA/Masreglas -> LAMBDA'
+		print 'Reglas -> LAMBDA'
+	pass
+
+def p_masreglas_empty(t):
+	'masreglas :'
+	if mostrarProducciones:
+		print 'Masreglas -> LAMBDA'
 	pass
 
 def p_reglas_unaregla(t):
@@ -69,20 +74,31 @@ def p_masreglas_main(t):
 		print 'Masreglas : Masreglas Main'
 	
 def p_unaregla(t):
-	'''unaregla : REGLA '=' elemento
-	   main : '$' '=' elemento'''
+	"unaregla : REGLA '=' elemento"
 	reglas[t[1]] = reglas.get(t[1],ElementoOR()).append(t[3])
 	if mostrarProducciones:
-		print 'Unaregla -> regla = Elemento/Main : $ = Elemento'
+		print 'Unaregla -> REGLA = Elemento'
+
+def p_main(t):
+	"main : '$' '=' elemento"
+	reglas[t[1]] = reglas.get(t[1],ElementoOR()).append(t[3])
+	if mostrarProducciones:
+		print 'Main -> $ = Elemento'
 
 def p_unaregla_final(t):
-	'''unaregla : REGLA '.' '=' elemento
-	   main : '$' '.' '=' elemento'''
+	"unaregla : REGLA '.' '=' elemento"
 	reglas[t[1]] = reglas.get(t[1],ElementoOR()).append(t[4])
 	finales[t[1]] = finales.get(t[1],ElementoOR()).append(t[4])
 	if mostrarProducciones:
-		print 'Unaregla -> regla. = Elemento/Main -> $. = Elemento'
-	
+		print 'Unaregla -> REGLA. = Elemento'
+
+def p_main_final(t):
+	"main : '$' '.' '=' elemento"
+	reglas[t[1]] = reglas.get(t[1],ElementoOR()).append(t[4])
+	finales[t[1]] = finales.get(t[1],ElementoOR()).append(t[4])
+	if mostrarProducciones:
+		print 'Main -> $. = Elemento'
+
 def p_elemento(t):
 	"elemento : elemento '|' elementoand"
 	if mostrarProducciones:
@@ -138,125 +154,131 @@ def p_elementobase_maymen(t):
 		print "Elementobase -> <Elemento>"
 
 def p_elementobase_regla(t):
-	'''elementobase : REGLA
-	elementobase : '$' '''
+	"elementobase : REGLA"
 	verificar.append(t[1])
 	t[0] = ElementoREGLA(nombre=t[1],reglas=reglas,finales=finales)
 	if mostrarProducciones:
-		print 'Elementobase -> regla/Elementobase -> $'
+		print 'Elementobase -> REGLA'
+
+def p_elementobase_main(t):
+	"elementobase : '$' "
+	verificar.append(t[1])
+	t[0] = ElementoREGLA(nombre=t[1],reglas=reglas,finales=finales)
+	if mostrarProducciones:
+		print 'Elementobase -> $'
 
 def p_ball(t):
 	'prim : BALL'
 	t[0]=Ball()
 	if mostrarProducciones:
-		print 'Prim -> ball'
+		print 'Prim -> BALL'
 
 def p_box(t):
 	'prim : BOX'
 	t[0]=Box()
 	if mostrarProducciones:
-		print 'Prim -> box'
+		print 'Prim -> BOX'
 
 def p_nada(t):
 	'prim : NADA'
 	t[0]=Nada()
 	if mostrarProducciones:
-		print 'Prim -> nada'
+		print 'Prim -> NADA'
 
 def p_trans_rx(t):
 	'trans : RX numero'
 	t[0]= TransRX(num=t[2])
 	if mostrarProducciones:
-		print 'Trans -> rx Numero'
+		print 'Trans -> RX Numero'
 
 def p_trans_ry(t):
 	'trans : RY numero'
 	t[0]= TransRY(num=t[2])
 	if mostrarProducciones:
-		print 'Trans -> ry Numero'
+		print 'Trans -> RY Numero'
 
 def p_trans_rz(t):
 	'trans : RZ numero'
 	t[0]= TransRZ(num=t[2])
 	if mostrarProducciones:
-		print 'Trans -> rz Numero'
+		print 'Trans -> RZ Numero'
 
 def p_trans_s(t):
 	'trans : S numero'
 	num = t[2]
 	t[0]= TransS(sx=num,sy=num,sz=num)
 	if mostrarProducciones:
-		print 'Trans -> s Numero'
+		print 'Trans -> S Numero'
 
 def p_trans_sx(t):
 	'trans : SX numero'
 	num = t[2]
 	t[0]= TransS(sx=num)
 	if mostrarProducciones:
-		print 'Trans -> sx Numero'
+		print 'Trans -> SX Numero'
 
 def p_trans_sy(t):
 	'trans : SY numero'
 	num = t[2]
 	t[0]= TransS(sy=num)
 	if mostrarProducciones:
-		print 'Trans -> sy Numero'
+		print 'Trans -> SY Numero'
 
 def p_trans_sz(t):
 	'trans : SZ numero'
 	num = t[2]
 	t[0]= TransS(sz=num)
 	if mostrarProducciones:
-		print 'Trans -> sz Numero'
+		print 'Trans -> SZ Numero'
 
 def p_trans_tx(t):
 	'trans : TX numero'
 	num = t[2]
 	t[0]= TransT(tx=num)
 	if mostrarProducciones:
-		print 'Trans -> tx Numero'
+		print 'Trans -> TX Numero'
 
 def p_trans_ty(t):
 	'trans : TY numero'
 	num = t[2]
 	t[0]= TransT(ty=num)
 	if mostrarProducciones:
-		print 'Trans -> ty Numero'
+		print 'Trans -> TY Numero'
 
 def p_trans_tz(t):
 	'trans : TZ numero'
 	num = t[2]
 	t[0]= TransT(tz=num)
 	if mostrarProducciones:
-		print 'Trans -> tz Numero'
+		print 'Trans -> TZ Numero'
 
 def p_trans_cr(t):
 	'trans : CR numero'
 	num = t[2]
 	t[0]= TransC(cr=num)
 	if mostrarProducciones:
-		print 'Trans -> cr Numero'
+		print 'Trans -> CR Numero'
 
 def p_trans_cg(t):
 	'trans : CG numero'
 	num = t[2]
 	t[0]= TransC(cg=num)
 	if mostrarProducciones:
-		print 'Trans -> cg Numero'
+		print 'Trans -> CG Numero'
 
 def p_trans_cb(t):
 	'trans : CB numero'
 	num = t[2]
 	t[0]= TransC(cb=num)
 	if mostrarProducciones:
-		print 'Trans -> cb Numero'
+		print 'Trans -> CB Numero'
 
 def p_trans_d(t):
 	'trans : D numero'
 	num = t[2]
 	t[0]= TransD(d=num)	
 	if mostrarProducciones:
-		print 'Trans -> d Numero'
+		print 'Trans -> D Numero'
 
 def p_numero_mas_factor(t):
 	"numero : numero '+' factor"
@@ -285,26 +307,36 @@ def p_factor_div_termino(t):
 	if mostrarProducciones:
 		print "Factor -> Factor / Termino"
 
-def p_salteo(t):
-	'''numero : factor
-	   factor : termino
-	   termino : NUM'''
+def p_salteo_n(t):
+	'numero : factor'
 	t[0] = t[1]
 	if mostrarProducciones:
-		print 'Numero -> Factor / Factor -> Termino / Termino -> num'
+		print 'Numero -> Factor'
+
+def p_salteo_f(t):
+	'factor : termino'
+	t[0] = t[1]
+	if mostrarProducciones:
+		print 'Factor -> Termino'
+
+def p_salteo_t(t):
+	'termino : NUM'
+	t[0] = t[1]
+	if mostrarProducciones:
+		print 'Termino -> NUM'
 
 def p_termino_mas(t):
 	"termino : '+' NUM"
 	t[0] = t[2]
 	if mostrarProducciones:
-		print 'Termino -> + num'
+		print 'Termino -> + NUM'
 
 
 def p_termino_menos(t):
 	"termino : '-' NUM"
 	t[0] = -1 * t[2]
 	if mostrarProducciones:
-		print 'Termino -> - num'
+		print 'Termino -> - NUM'
 
 def p_termino_parentesis(t):
 	"termino : '(' numero ')'"

@@ -1,0 +1,26 @@
+Reglas -> LAMBDA
+Prim -> BALL
+Elementobase -> Prim
+Elementoand -> Elementobase
+Elemento -> Elementoand
+Unaregla -> REGLA = Elemento
+Reglas -> Reglas Unaregla
+Elementobase -> REGLA
+Elementoand -> Elementobase
+Elemento -> Elementoand
+Elementobase -> REGLA
+Elementoand -> Elementobase
+Elemento -> Elemento | Elementoand
+Prim -> NADA
+Elementobase -> Prim
+Elementoand -> Elementobase
+Elemento -> Elemento | Elementoand
+Main -> $ = Elemento
+Masreglas -> LAMBDA
+Prim -> BOX
+Elementobase -> Prim
+Elementoand -> Elementobase
+Elemento -> Elementoand
+Unaregla -> REGLA = Elemento
+Masreglas -> Masreglas Unaregla
+Programa -> Reglas Main Masreglas

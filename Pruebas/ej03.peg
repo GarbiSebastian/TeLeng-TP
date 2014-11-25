@@ -1,1 +1,3 @@
-$=ball:cb0|box:cb0:cg0
+A=ball
+$=A|B|_
+B=box

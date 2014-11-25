@@ -1,0 +1,8 @@
+Reglas -> LAMBDA
+Prim -> box
+Elementobase -> Prim
+Elementoand -> Elementobase
+Elemento -> Elementoand
+Main -> $ = Elemento
+Masreglas -> LAMBDA
+Programa -> Reglas Main Masreglas
