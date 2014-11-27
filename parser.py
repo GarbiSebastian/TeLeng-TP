@@ -1,4 +1,5 @@
 # -----------------------------------------------------------------------------
+# -*- encoding: utf-8 -*-
 # module: parser.py
 # Parser Rules
 # -----------------------------------------------------------------------------
@@ -37,7 +38,7 @@ verificar = []
 def verificarReglas():
 	for reg in verificar:
 		if reg not in reglas:
-			p_error()
+			raise Exception("La regla %s no está definida" %(reg))
 
 def p_programa(t):
 	'programa : reglas main masreglas'
@@ -358,7 +359,9 @@ def p_termino_parentesis_menos(t):
 	   
 # Error rule for syntax errors.
 def p_error(t):
-	raise SyntaxError("invalid syntax")
+	valor = (t.valorPosta if t.valorPosta is not None else t.value)
+	#print "Error de sintaxis en la linea",t.lineno ,"cerca de", valor,"reconocido como",t.type,t.value
+	raise SyntaxError("Error de sintaxis en la linea %d cerca de '%s' reconocido como %s '%s'" %(t.lineno,valor,t.type,t.value))
 # Build the parser.
 parser = yacc.yacc()
 result = parser.parse(content)
